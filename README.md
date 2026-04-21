@@ -39,7 +39,7 @@ This file contains the authentication token.
 Script:
 
 ```
-Basespace_download.sh
+BaseSpace_download.sh
 ```
 
 Before running:
@@ -49,7 +49,7 @@ Before running:
 Run:
 
 ```bash
-./Basespace_download.sh
+./BaseSpace_download.sh
 ```
 
 The script will download all data associated with the specified BaseSpace project.
@@ -61,7 +61,7 @@ The script will download all data associated with the specified BaseSpace projec
 Script:
 
 ```
-Basespace_upload.sh
+BaseSpace_upload.sh
 ```
 
 This will not be used in production, it is only used to generate test datasets.
@@ -83,7 +83,7 @@ Before running:
 Run:
 
 ```bash
-./Basespace_upload.sh
+./BaseSpace_upload.sh
 ```
 
 ---
@@ -141,4 +141,60 @@ python parse-upload-1.1.1.py \
 
 Run from the directory containing `parse-upload-1.1.1.py`.
 
+---
+
+# Upload to NRP
+
+Script:
+
+```
+nrp_upload.sh
+```
+
+Uploads datasets (single files or directories) to an NRP InvenioRDM repository and optionally publishes them.
+
+## Prerequisites
+
+Install `nrp-cmd`:
+
+```bash
+curl -O https://raw.githubusercontent.com/NRP-CZ/nrp-cmd/main/nrp-cmd && chmod +x nrp-cmd && sudo mv nrp-cmd /usr/local/bin/
+```
+
+On first run, `nrp-cmd` will prompt you to authenticate with your NRP account.  
+If authentication fails, remove `~/.nrp/` and re-run to start fresh.
+
+## Options
+
+| Flag | Argument | Default | Description |
+|------|----------|---------|-------------|
+| `-r` | `<alias>` | `wfrepo` | Repository alias |
+| `-c` | `<community>` | `generic` | Community to publish into |
+| `-p` | — | off | Auto-publish after upload |
+| `-d` | `<text>` | — | Description (optional) |
+| `-h` | — | — | Print help and exit |
+
+Positional arguments (required, in order): `<title>` `<file_or_directory>`
+
+## Usage Examples
+
+**Minimal — single file, draft only:**
+```bash
+./nrp_upload.sh "My Dataset" ./path/to/single_file
+```
+
+**Directory upload with auto-publish:**
+```bash
+./nrp_upload.sh -p "My Dataset" ./path/to/directory/
+```
+
+**Custom repository and community:**
+```bash
+./nrp_upload.sh -r myrepo -c myproject "SC Analysis Dataset" ./trailmaker_files/
+```
+
+**Full options — description, community, and auto-publish:**
+```bash
+./nrp_upload.sh -p -d "Single cell RNA-seq data from Trailmaker pipeline" -c myproject "SC Data" ./data.zip
+```
 ---
