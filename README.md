@@ -6,8 +6,9 @@ This repository contains three simple scripts for transferring FASTQ data betwee
 - Parse Biosciences Trailmaker (via the provided `parse-upload-1.1.1.py` script)
 
 The BaseSpace upload script exists only to generate test data for validating the download workflow.
-
-
+<br />
+<br />
+<br />
 
 # Prerequisites
 
@@ -33,6 +34,9 @@ After successful authentication, a configuration file is created at:
 This file contains the authentication token.
 
 ---
+<br />
+<br />
+<br />
 
 # BaseSpace Download
 
@@ -55,6 +59,8 @@ Run:
 The script will download all data associated with the specified BaseSpace project.
 
 ---
+<br />
+<br />
 
 # BaseSpace Upload (Testing Only)
 
@@ -87,6 +93,9 @@ Run:
 ```
 
 ---
+<br />
+<br />
+<br />
 
 # Trailmaker Upload
 
@@ -142,59 +151,43 @@ python parse-upload-1.1.1.py \
 Run from the directory containing `parse-upload-1.1.1.py`.
 
 ---
+<br />
+<br />
+<br />
 
 # Upload to NRP
 
-Script:
+**copy-pasteable commands** for a first-time user:
+<br />
+<br />
 
+## Step 1: Configure repository (one-time)
 ```
-nrp_upload.sh
-```
-
-Uploads datasets (single files or directories) to an NRP InvenioRDM repository and optionally publishes them.
-
-## Prerequisites
-
-Install `nrp-cmd`:
-
-```bash
-curl -O https://raw.githubusercontent.com/NRP-CZ/nrp-cmd/main/nrp-cmd && chmod +x nrp-cmd && sudo mv nrp-cmd /usr/local/bin/
+nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ wfrepo
 ```
 
-On first run, `nrp-cmd` will prompt you to authenticate with your NRP account.  
-If authentication fails, remove `~/.nrp/` and re-run to start fresh.
-
-## Options
-
-| Flag | Argument | Default | Description |
-|------|----------|---------|-------------|
-| `-r` | `<alias>` | `wfrepo` | Repository alias |
-| `-c` | `<community>` | `generic` | Community to publish into |
-| `-p` | — | off | Auto-publish after upload |
-| `-d` | `<text>` | — | Description (optional) |
-| `-h` | — | — | Print help and exit |
-
-Positional arguments (required, in order): `<title>` `<file_or_directory>`
-
-## Usage Examples
-
-**Minimal — single file, draft only:**
-```bash
-./nrp_upload.sh "My Dataset" ./path/to/single_file
+## Step 2: Create record
+```
+nrp-cmd create record '{"title": "SC-test-cli"}' \
+  --repository wfrepo \
+  --community generic \
+  --set r
 ```
 
-**Directory upload with auto-publish:**
-```bash
-./nrp_upload.sh -p "My Dataset" ./path/to/directory/
+## Step 3: Upload all files from a directory
 ```
+for f in ./trailmaker_files/*; do
+  [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository wfrepo
+done
 
-**Custom repository and community:**
-```bash
-./nrp_upload.sh -r myrepo -c myproject "SC Analysis Dataset" ./trailmaker_files/
+# Or just a single file
+nrp-cmd upload file @r <file>
 ```
+## Step 4: Publish (optional)
+```
+nrp-cmd publish record @r --repository wfrepo
+```
+<br />
+<br />
 
-**Full options — description, community, and auto-publish:**
-```bash
-./nrp_upload.sh -p -d "Single cell RNA-seq data from Trailmaker pipeline" -c myproject "SC Data" ./data.zip
-```
----
+**For full CLI documentation visit [nrp-cz.github.io](https://nrp-cz.github.io/docs/userguide/commandline)**
