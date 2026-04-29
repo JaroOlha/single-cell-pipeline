@@ -1,9 +1,10 @@
 # Genomics Transfer Scripts
 
-This repository contains three simple scripts for transferring FASTQ data between:
+This repository contains simple scripts for transferring FASTQ data between:
 
 - Illumina BaseSpace (via the `bs` CLI)
 - Parse Biosciences Trailmaker (via the provided `parse-upload-1.1.1.py` script)
+- Invenio RDM repository
 
 The BaseSpace upload script exists only to generate test data for validating the download workflow.
 <br />
@@ -25,13 +26,16 @@ chmod u+x bs
 You will receive a URL in the terminal.  
 Open it in a browser, authenticate, and approve access.
 
-After successful authentication, a configuration file is created at:
+After successful authentication, a configuration file is created containing authentication token at:
 
 ```
 ~/.basespace/default.cfg
 ```
 
-This file contains the authentication token.
+
+## nrp-cmd - commandline client for invenio repositories
+
+[Installation with pip & virtualenv or uvx](https://nrp-cz.github.io/docs/userguide/commandline#installation)
 
 ---
 <br />
