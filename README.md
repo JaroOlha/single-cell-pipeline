@@ -3,8 +3,8 @@
 This repository contains simple scripts for transferring FASTQ data between:
 
 - Illumina BaseSpace (via the `bs` CLI)
-- Parse Biosciences Trailmaker (via the provided `parse-upload-1.1.1.py` script)
-- Invenio RDM repository
+- Parse Biosciences Trailmaker (via the provided `parse-upload-1.2.1.py` script)
+- Invenio RDM repository (via `nrp-cmd` client)
 
 The BaseSpace upload script exists only to generate test data for validating the download workflow.
 <br />
@@ -133,7 +133,7 @@ Click **Refresh Token**.
 You will see a command similar to:
 
 ```bash
-python parse-upload-1.1.1.py \
+python parse-upload-1.2.1.py \
   --token <TOKEN> \
   --run_id <RUN_ID> \
   --wt_files /path/to/file_1.fastq.gz /path/to/file_2.fastq.gz
@@ -146,13 +146,16 @@ python parse-upload-1.1.1.py \
 Replace the file paths with your local FASTQ directory:
 
 ```bash
-python parse-upload-1.1.1.py \
+python parse-upload-1.2.1.py \
   --token <TOKEN> \
   --run_id <RUN_ID> \
   --wt_files /fastq_folder/*.fastq.gz
 ```
 
-Run from the directory containing `parse-upload-1.1.1.py`.
+Run from the directory containing `parse-upload-1.2.1.py`.
+
+Disclaimer:
+`parse-upload-1...py` script is being constantly updated. If you encounter an error when uploading to Trailmaker, download the latest version from their site.
 
 ---
 <br />
@@ -165,14 +168,14 @@ Run from the directory containing `parse-upload-1.1.1.py`.
 <br />
 <br />
 
-## Step 1: Configure repository (one-time)
+## Step 1: Add a repository (one-time)
 ```
 nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ wfrepo
 ```
-
+Paste your token when prompted.
 ## Step 2: Create record
 ```
-nrp-cmd create record '{"title": "SC-test-cli"}' \
+nrp-cmd create record '{"title": "Name-of-your-record"}' \
   --repository wfrepo \
   --community generic \
   --set r
@@ -180,7 +183,8 @@ nrp-cmd create record '{"title": "SC-test-cli"}' \
 
 ## Step 3: Upload all files from a directory
 ```
-for f in ./trailmaker_files/*; do
+# define path to your dataset
+for f in ./path-to-your-dataset/*; do
   [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository wfrepo
 done
 
