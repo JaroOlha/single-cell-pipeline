@@ -3,10 +3,10 @@
 This repository contains simple scripts for transferring FASTQ data between:
 
 - Illumina BaseSpace (via the `bs` CLI)
-- Parse Biosciences Trailmaker (via the downloadable `parse-upload-x.x.x.py` script)
+- Upload instructions for Parse Biosciences Trailmaker (via the downloadable `parse-upload-x.x.x.py` script)
 - Invenio RDM repository (via `nrp-cmd` client)
 
-The BaseSpace upload script exists only to generate test data for validating the download workflow.
+The BaseSpace upload script exists only to create test data for validating the download workflow.
 <br />
 <br />
 <br />
@@ -117,7 +117,7 @@ If you only want to upload the FASTQ files for now, close the window -- the expe
 ---
 <br />
 
-## Step 2 - Download the upload script
+## Step 2 — Download the upload script
 Download / copy the `parse-upload-x.x.x.py` script.
 
 ---
@@ -168,12 +168,12 @@ Before you start uploading to NRP, you need to register / login at the repositor
 **Copy-pasteable commands for a first-time user:**
 <br />
 
-## Step 1: Add a repository (one-time)
+## Step 1 — Add a repository (one-time)
 ```
 nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ wfrepo
 ```
 Paste your token when prompted.
-## Step 2: Create record
+## Step 2 — Create record
 ```
 nrp-cmd create record '{"title": "Name-of-your-record"}' \
   --repository wfrepo \
@@ -181,7 +181,7 @@ nrp-cmd create record '{"title": "Name-of-your-record"}' \
   --set r
 ```
 
-## Step 3: Upload all files from a directory
+## Step 3 — Upload all files from a directory
 ```
 # define path to your dataset
 for f in ./path-to-your-dataset/*; do
@@ -191,7 +191,7 @@ done
 # Or just a single file
 nrp-cmd upload file @r <file>
 ```
-## Step 4: Publish (optional)
+## Step 4 — Publish (optional)
 ```
 nrp-cmd publish record @r --repository wfrepo
 ```
