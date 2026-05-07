@@ -163,8 +163,9 @@ Disclaimer:
 <br />
 
 # Upload to NRP
+Before you start uploading to NRP, you need to register / login on the repository [website](https://workflow-repo.test.du.cesnet.cz/) and generate a token.
 
-**copy-pasteable commands** for a first-time user:
+**Copy-pasteable commands for a first-time user:**
 <br />
 <br />
 
