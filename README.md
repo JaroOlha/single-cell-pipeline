@@ -3,7 +3,7 @@
 This repository contains simple scripts for transferring FASTQ data between:
 
 - Illumina BaseSpace (via the `bs` CLI)
-- Parse Biosciences Trailmaker (via the provided `parse-upload-1.2.1.py` script)
+- Parse Biosciences Trailmaker (via the downloadable `parse-upload-x.x.x.py` script)
 - Invenio RDM repository (via `nrp-cmd` client)
 
 The BaseSpace upload script exists only to generate test data for validating the download workflow.
@@ -44,16 +44,6 @@ After successful authentication, a configuration file is created containing auth
 
 # BaseSpace Download
 
-Script:
-
-```
-BaseSpace_download.sh
-```
-
-Before running:
-
-- Edit the script and insert the correct `PROJECT_ID`.
-
 Run:
 
 ```bash
@@ -74,7 +64,7 @@ Script:
 BaseSpace_upload.sh
 ```
 
-This will not be used in production, it is only used to generate test datasets.
+This is not intented be used in production, it is only used to create test datasets.
 
 ## FASTQ Naming Requirements
 
@@ -125,37 +115,45 @@ If you only want to upload the FASTQ files for now, close the window -- the expe
 3. Click the edit button next to **Fastq files** and select **Console Upload**.
 
 ---
+<br />
 
-## Step 2 — Generate Upload Token
+## Step 2 - Download the upload script
+Download / copy the `parse-upload-x.x.x.py` script.
+
+---
+<br />
+
+## Step 3 — Generate Upload Token
 
 Click **Refresh Token**.
 
 You will see a command similar to:
 
 ```bash
-python parse-upload-1.2.1.py \
+python parse-upload-x.x.x.py \
   --token <TOKEN> \
   --run_id <RUN_ID> \
   --wt_files /path/to/file_1.fastq.gz /path/to/file_2.fastq.gz
 ```
 
 ---
+<br />
 
-## Step 3 — Modify File Paths
+## Step 4 — Modify File Paths
 
 Replace the file paths with your local FASTQ directory:
 
 ```bash
-python parse-upload-1.2.1.py \
+python parse-upload-x.x.x.py \
   --token <TOKEN> \
   --run_id <RUN_ID> \
   --wt_files /fastq_folder/*.fastq.gz
 ```
 
-Run from the directory containing `parse-upload-1.2.1.py`.
+Run from the directory containing `parse-upload-x.x.x.py`.
 
 Disclaimer:
-`parse-upload-1...py` script is being constantly updated. If you encounter an error when uploading to Trailmaker, download the latest version from their site.
+`parse-upload-x.x.x.py` script is being constantly updated. If you encounter an error when uploading to Trailmaker, download the latest version from their site.
 
 ---
 <br />
@@ -163,10 +161,11 @@ Disclaimer:
 <br />
 
 # Upload to NRP
-Before you start uploading to NRP, you need to register / login on the repository [website](https://workflow-repo.test.du.cesnet.cz/) and generate a token.
+Before you start uploading to NRP, you need to register / login at the repository [website](https://workflow-repo.test.du.cesnet.cz/) and generate a token in your profile `Settings` -> `Applications`
+<br />
+<br />
 
 **Copy-pasteable commands for a first-time user:**
-<br />
 <br />
 
 ## Step 1: Add a repository (one-time)
