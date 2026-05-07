@@ -2,9 +2,9 @@ import sys
 import traceback
 
 # Check minimum required python version is available
-if sys.version_info < (3, 6):
+if sys.version_info < (3, 7):
 
-    print("This script requires Python 3.6 or later. You are using Python {}.{}.{}. Upgrade your python version to 3.6 or higher and try again.".format(
+    print("This script requires Python 3.7 or later. You are using Python {}.{}.{}. Upgrade your python version to 3.7 or higher and try again.".format(
             sys.version_info.major, sys.version_info.minor, sys.version_info.micro
         )
     )
@@ -24,14 +24,20 @@ from concurrent.futures import ThreadPoolExecutor, wait
 from threading import Event, Lock
 import datetime
 
-SCRIPT_VERSION = "1.1.1"
+SCRIPT_VERSION = "1.2.1"
 
 MAX_RETRIES = 8  # Max number of retries to upload each PART_SIZE part
-THREADS_COUNT = 20
+MIN_THREADS_COUNT = 20
+MAX_THREADS_COUNT = 60
 
 # S3 multipart upload limits
 PART_SIZE_MIN = 5 * 1024 * 1024
 PART_COUNT_MAX = 10000
+
+# Groups of signed urls that are refreshed and expire together
+SIGNED_URLS_BATCH_SIZE = 500
+
+TIMEOUT_PUT_PART_SECONDS = 3600
 
 # To run other than in production, run the following environment command: export PARSE_API_URL=<api-base-url>
 
@@ -47,6 +53,22 @@ default_prod_api_url = "https://api.app.trailmaker.parsebiosciences.com/v2"
 base_url = os.environ.get("PARSE_API_URL") or default_prod_api_url
 
 RESUME_PARAMS_PATH = "resume_params.txt"
+# Line-by-line format for resume_params.txt:
+# 1: analysis_id
+# 2: upload_params (JSON) { fileId: string, uploadId: string, bucket: string, key: string }
+# 3: current_file_created ("True"/"False")
+# 4: file_list (JSON array of {"path","type"} objects)
+# 5: current_file_index (int)
+# 6: free_part_ranges (JSON produced by PartsProvider.get_pending_parts_for_save_str(), check that for format)
+# 7: SCRIPT_VERSION
+# Example:
+# 15a03fa2-3d06-48ee-8e42-8f33a10b4cda
+# {"fileId":"...","uploadId":"...","bucket":"...","key":"..."}
+# True
+# [{"path":"/path/a.fastq.gz","type":"immuneFastq"}]
+# 0
+# [[0,10],[15,20]]
+# 1.2.1
 ETAGS_PATH = "part_etags.txt"
 
 CLEAN_ERROR_PATH = "parse_upload_clean_error.log"
@@ -55,6 +77,9 @@ REQUEST_ERROR_PATH = "parse_upload_request_error.log"
 CURSOR_UP_ONE = "\x1b[1A"
 ERASE_CURRENT_LINE = "\x1b[2K"
 ERASE_UPPER_LINE = CURSOR_UP_ONE + ERASE_CURRENT_LINE
+
+
+MESSAGE_ERROR_FASTQS_SOLUTION = "You can delete the fastq files that didn't finish through the browser and upload them again from scratch"
 
 def wipe_file(file_path):
     with open(file_path, "w"):
@@ -82,7 +107,7 @@ def get_resume_params_from_file(version_check=False):
 
             if not (len(lines) in [6,7]):
                 raise Exception(
-                    "Resume file {} corrupted. You can delete the fastq files that didn't finish through the browser and upload them again from scratch".format(RESUME_PARAMS_PATH)
+                    "Resume file {} corrupted. {}".format(RESUME_PARAMS_PATH, MESSAGE_ERROR_FASTQS_SOLUTION)
                 )
 
         analysis_id = lines[0]
@@ -99,16 +124,14 @@ def get_resume_params_from_file(version_check=False):
                 file_list.append({"path": file, "type": "wtFastq"})
 
         current_file_index = int(lines[4])
-        completed_parts_by_thread = [
-            int(offset_str) for offset_str in lines[5].split(",")
-        ]
+        free_part_ranges = json.loads(lines[5])
 
         return (
             analysis_id,
             upload_params,
             file_list,
             current_file_index,
-            completed_parts_by_thread,
+            free_part_ranges,
             current_file_created
         )
 
@@ -126,6 +149,9 @@ def with_retry(func, try_number=0):
 
         return with_retry(func, try_number + 1)
 
+def parsed_expire_time(expire_time_str):
+    iso_str = expire_time_str.replace("Z", "+00:00")
+    return datetime.datetime.fromisoformat(iso_str).timestamp()
 
 class HTTPResponse:
     def __init__(self, response, response_data=None):
@@ -164,7 +190,7 @@ def http_put_part(signed_url, data):
     request = urllib.request.Request(signed_url, data=data, headers=headers, method="PUT")
 
     try:
-        with urllib.request.urlopen(request) as response:
+        with urllib.request.urlopen(request, timeout=TIMEOUT_PUT_PART_SECONDS) as response:
             return HTTPResponse(response)
 
     except Exception as e:
@@ -208,23 +234,27 @@ class UploadTracker:
         analysis_id,
         file_list,
         current_file_index,
-        completed_parts_by_thread,
+        free_part_ranges,
         upload_params,
         current_file_created,
         api_token,
+        threads_count
     ):
         self.analysis_id = analysis_id
         self.file_list = file_list
         self.current_file_index = current_file_index
         self.current_file_created = current_file_created
-        self.completed_parts_by_thread = completed_parts_by_thread
         self.upload_params = upload_params
         self.api_token = api_token
+        self.threads_count = threads_count
+
+        file_path = self.file_list[self.current_file_index]["path"]
+        self.parts_provider = PartsProvider(file_path, free_part_ranges)
 
         self.files_lock = Lock()
 
     @classmethod
-    def fromScratch(cls, analysis_id, file_dict, threads_count, api_token):
+    def fromScratch(cls, analysis_id, file_dict, api_token, threads_count):
         file_list = []
         for fastq_type, paths in file_dict.items():
             for path in paths:
@@ -233,27 +263,26 @@ class UploadTracker:
         # Starting from scratch, so wipe files
         cls.wipe_current_upload()
 
-        completed_parts_by_thread = [0] * threads_count
-
         return cls(
             analysis_id,
             file_list,
             0,
-            completed_parts_by_thread,
+            None,
             None,
             False,
             api_token,
+            threads_count
         )
 
 
     @classmethod
-    def fromResumeFile(cls, api_token):
+    def fromResumeFile(cls, api_token, threads_count):
         (
             analysis_id,
             upload_params,
             file_list,
             current_file_index,
-            completed_parts_by_thread,
+            free_part_ranges,
             current_file_created,
         ) = get_resume_params_from_file(version_check=True)
 
@@ -261,10 +290,11 @@ class UploadTracker:
             analysis_id,
             file_list,
             current_file_index,
-            completed_parts_by_thread,
+            free_part_ranges,
             upload_params,
             current_file_created,
             api_token,
+            threads_count
         )
 
     @classmethod
@@ -288,7 +318,7 @@ class UploadTracker:
                         str(self.current_file_created),
                         json.dumps(self.file_list),
                         "{}".format(self.current_file_index),
-                        "{}".format(','.join([str(offset) for offset in self.completed_parts_by_thread])),
+                        self.parts_provider.get_pending_parts_for_save_str(),
                         SCRIPT_VERSION,
                     ]
                 )
@@ -306,12 +336,13 @@ class UploadTracker:
 
         return self.upload_params
 
-    def get_current_progress(self):
+    def get_global_progress(self):
         current_file_info = self.file_list[self.current_file_index]
+
         return (
             self.analysis_id,
             current_file_info["path"],
-            self.completed_parts_by_thread,
+            self.parts_provider,
             current_file_info["type"]
         )
 
@@ -334,8 +365,13 @@ class UploadTracker:
 
     def file_uploaded(self):
         self.current_file_index += 1
-        self.completed_parts_by_thread = [0] * len(self.completed_parts_by_thread)
         self.current_file_created = False
+
+        if self.is_finished():
+            return
+
+        file_path = self.file_list[self.current_file_index]["path"]
+        self.parts_provider = PartsProvider(file_path, None)
 
         self.save_progress()
 
@@ -343,14 +379,12 @@ class UploadTracker:
         with open(ETAGS_PATH, "w"):
             pass
 
-    def part_uploaded(self, thread_index, part_number, etag):
+    def part_uploaded(self, part_number, etag):
         with self.files_lock:
             with open(ETAGS_PATH, "a") as file:
                 # write etag without the double commas
                 file.write("{},{}".format(part_number, etag))
                 file.write("\n")
-
-            self.completed_parts_by_thread[thread_index] += 1
 
             self.save_progress()
 
@@ -392,45 +426,54 @@ class ProgressDisplayer:
         sys.stdout.write("\rUploading file {}\n".format(self.file_path))
         sys.stdout.write("\rProgress: [{:<50}] {:.2f}%".format(progress_bar, percentage))
 
-# Manages the upload of a single file
-class FileUploader:
-    def __init__(self, upload_tracker):
-        (analysis_id, current_file, completed_parts_by_thread, fastq_type) = (
-            upload_tracker.get_current_progress()
-        )
-
+class SignedUrlsProvider:
+    def __init__(self, analysis_id, upload_id, key, api_token, number_of_parts):
         self.analysis_id = analysis_id
-        self.api_token = upload_tracker.api_token
-        self.upload_tracker = upload_tracker
+        self.upload_id = upload_id
+        self.key = key
+        self.api_token = api_token
 
-        self.file_path = current_file
-        self.fastq_type = fastq_type
-        self.completed_parts_by_thread = completed_parts_by_thread
 
-        file_size = os.path.getsize(self.file_path)
+        self.parts_count = number_of_parts
+        batches_count = math.ceil(number_of_parts / SIGNED_URLS_BATCH_SIZE)
 
-        # Can't have more than 10000 parts
-        minimum_part_size = math.ceil(file_size / PART_COUNT_MAX)
+        self.signed_urls_by_part_index = [None] * self.parts_count
+        self.signed_urls_expire_time_by_batch = [None] * batches_count
 
-        # Can't use part sizes smaller than 5mb
-        self.part_size = max(minimum_part_size, PART_SIZE_MIN)
+        self.signed_urls_lock = Lock()
 
-        self.number_of_parts = math.ceil(file_size / self.part_size)
+        # Set of batch indexes currently being refreshed
+        self.signed_urls_refreshing = set()
 
-        self.progress_displayer = ProgressDisplayer(
-            self.number_of_parts, sum(completed_parts_by_thread), current_file
-        )
+        # Dict of batch_index -> Event, filled lazily when a refresh for a batch is first called
+        self.signed_urls_refresh_events = {}
 
-        # These will be obtained from begin_multipart_upload()
-        self.upload_id = None
-        self.key = None
-        self.file_id = None
+    def get_signed_url_for_part(self, part_index):
+        signed_url = self.signed_urls_by_part_index[part_index]
 
-    def get_signed_url_for_part(self, part_number):
+        if signed_url is None or self._is_signed_urls_expired(part_index):
+            self._atomic_refresh_signed_urls(part_index)
+
+            signed_url = self.signed_urls_by_part_index[part_index]
+
+        if (signed_url is None):
+            raise Exception("Failed to obtain signed url for part {}, check your internet connection and try resuming the upload".format(part_index + 1))
+
+        return signed_url
+
+    def _is_signed_urls_expired(self, part_index):
+        batch_index = part_index // SIGNED_URLS_BATCH_SIZE
+
+        expire_time = self.signed_urls_expire_time_by_batch[batch_index]
+
+        return expire_time is None or time.time() >= expire_time
+
+    def _fetch_batch_signed_urls(self, batch_parts_count, parts_offset_index):
+        # + 1 to partsOffset because we are using 1-indexed part numbers in the backend (s3 uses 1-indexing for parts)
         response = http_post(
-            "{}/analysis/{}/cliUpload/{}/part/{}/signedUrl".format(base_url, self.analysis_id, self.upload_id, part_number),
-            {"x-api-token": "Bearer {}".format(self.api_token)},
-            json_data={"key": self.key},
+            "{}/analysis/{}/cliUpload/{}/batchSignedUrls".format(base_url, self.analysis_id, self.upload_id),
+            {"X-Api-Token": "Bearer {}".format(self.api_token)},
+            json_data={"key": self.key, "partsCount": batch_parts_count, "partsOffset": parts_offset_index},
         )
 
         if response.status_code != 200:
@@ -438,11 +481,190 @@ class FileUploader:
                 "Failed to begin upload of part of the file to our servers, check your internet connection and try resuming the upload"
             )
 
-        return response.json()
+        signed_urls = response.json().get("signedUrls")
+        expire_time_str = response.json().get("expireTime")
+
+        if (batch_parts_count != len(signed_urls)):
+            raise Exception("Received an invalid amount of signed urls from the server, check your internet connection and try resuming the upload and let us know about this problem")
+
+        expire_time = parsed_expire_time(expire_time_str)
+
+        return signed_urls, expire_time
+
+    def _refresh_signed_urls(self, batch_index):
+        parts_offset = batch_index * SIGNED_URLS_BATCH_SIZE
+
+        batch_size = min(SIGNED_URLS_BATCH_SIZE, self.parts_count - parts_offset)
+
+        batch_signed_urls, batch_signed_urls_expire_time = self._fetch_batch_signed_urls(batch_size, parts_offset)
+
+        if (batch_size != len(batch_signed_urls)):
+            raise Exception("Received an invalid amount of signed urls from the server, check your internet connection and try resuming the upload and let us know about this problem")
+
+        # Replace signed urls in the corresponding batch
+        self.signed_urls_by_part_index[parts_offset: parts_offset + batch_size] = batch_signed_urls
+
+        # Update signed url expire time
+        self.signed_urls_expire_time_by_batch[batch_index] = batch_signed_urls_expire_time
+
+    def _atomic_refresh_signed_urls(self, part_index):
+        batch_index = part_index // SIGNED_URLS_BATCH_SIZE
+
+        event = None
+
+        with self.signed_urls_lock:
+            # Lazy creation
+            if batch_index not in self.signed_urls_refresh_events:
+                self.signed_urls_refresh_events[batch_index] = Event()
+                self.signed_urls_refresh_events[batch_index].set()
+
+            # If this batch is already being refreshed, wait for it to finish
+            if batch_index in self.signed_urls_refreshing:
+                event = self.signed_urls_refresh_events[batch_index]
+
+            else:
+                self.signed_urls_refreshing.add(batch_index)
+                self.signed_urls_refresh_events[batch_index].clear()
+
+        if event is not None:
+            event.wait()
+            return
+
+        try:
+            self._refresh_signed_urls(batch_index)
+        except Exception as e:
+            with self.signed_urls_lock:
+                self.signed_urls_refreshing.remove(batch_index)
+                self.signed_urls_refresh_events[batch_index].set()
+            raise e
+
+        with self.signed_urls_lock:
+            self.signed_urls_refreshing.remove(batch_index)
+            self.signed_urls_refresh_events[batch_index].set()
+
+class PartsProvider:
+    def __init__(self, file_path, free_part_ranges):
+        file_size = os.path.getsize(file_path)
+
+        # Can't have more than 10000 parts
+        minimum_part_size = math.ceil(file_size / PART_COUNT_MAX)
+        # Can't use part sizes smaller than 5mb
+        self.part_size = max(minimum_part_size, PART_SIZE_MIN)
+        self.number_of_parts = math.ceil(file_size / self.part_size)
+
+        self.file_path = file_path
+
+        # Ranges are used as [start, end), begin with one range with all the parts
+        if (free_part_ranges is not None):
+            # Saved ranges can have duplicate parts to make the saving process faster
+            # so on load we need to deduplicate and merge them to avoid uploading parts more than once
+            self.free_part_ranges = self._deduplicated_and_merged_ranges(free_part_ranges)
+
+            if (len(self.free_part_ranges) != 0 and self.free_part_ranges[-1][1] > self.number_of_parts):
+                raise Exception("Resume file {} corrupted, it contains invalid part ranges. {}".format(RESUME_PARAMS_PATH, MESSAGE_ERROR_FASTQS_SOLUTION))
+        else:
+            self.free_part_ranges = [[0, self.number_of_parts]]
+
+        self.uploading_parts = set()
+        self.parts_lock = Lock()
+
+    def get_next_part(self):
+        with self.parts_lock:
+            # Case we are done uploading
+            if (len(self.free_part_ranges) == 0):
+                return None, None
+
+            part_index = self._get_lowest_free_part()
+
+        with open(self.file_path, "rb") as file:
+            file.seek(part_index * self.part_size)
+            part = file.read(self.part_size)
+
+        return part, part_index
+
+    # Sorts ranges and merges them when possible to avoid parts being stored more than once
+    def _deduplicated_and_merged_ranges(self, ranges_with_duplicates):
+        if (len(ranges_with_duplicates) == 0):
+            return []
+
+        ranges_with_duplicates.sort(key=lambda part_range: part_range[0])
+
+        merged_ranges = [ranges_with_duplicates[0]]
+        for start, end in ranges_with_duplicates[1:]:
+            [previous_start, previous_end] = merged_ranges[-1]
+
+            if previous_end >= start:
+                merged_ranges[-1] = [previous_start, max(previous_end, end)]
+            else:
+                merged_ranges.append([start, end])
+
+        return merged_ranges
+
+    # Returns everything that isn't uploaded yet, so a combination of free parts and currently uploading parts
+    # Can have intersecting ranges (this is handled when it actually matters: on load)
+    def get_pending_parts_for_save_str(self):
+        with self.parts_lock:
+            free_part_ranges_snap = self.free_part_ranges.copy()
+            uploading_parts_snap = self.uploading_parts.copy()
+
+        uploading_parts_ranges = [[pending_part_index, pending_part_index + 1] for pending_part_index in uploading_parts_snap]
+
+        return json.dumps(uploading_parts_ranges + free_part_ranges_snap)
+
+    def get_progress(self):
+        return self.number_of_parts - sum([end - start for start, end in self.free_part_ranges])
+
+    # TODO current version, maybe make it prompt the upload tracker to save progress from in here?
+    # Or just return the new shape and make it be passed to the upload tracker, but that's kind of ugly
+    def part_uploaded(self, part_index):
+        with self.parts_lock:
+            self.uploading_parts.remove(part_index)
+
+    def _get_lowest_free_part(self):
+        part_index = self.free_part_ranges[0][0]
+
+        self.uploading_parts.add(part_index)
+
+        self.free_part_ranges[0][0] += 1
+
+        if (self.free_part_ranges[0][0] == self.free_part_ranges[0][1]):
+            self.free_part_ranges.pop(0)
+
+        return part_index
+
+
+# Manages the upload of a single file
+class FileUploader:
+    def __init__(self, upload_tracker):
+        (analysis_id, file_path, parts_provider, fastq_type) = (
+            upload_tracker.get_global_progress()
+        )
+
+        self.analysis_id = analysis_id
+        self.api_token = upload_tracker.api_token
+        self.threads_count = upload_tracker.threads_count
+        self.upload_tracker = upload_tracker
+
+        self.fastq_type = fastq_type
+        self.file_path = file_path
+
+        self.parts_provider = parts_provider
+
+        self.progress_displayer = ProgressDisplayer(
+            self.parts_provider.number_of_parts, self.parts_provider.get_progress(), file_path
+        )
+
+        # These will be obtained from begin_multipart_upload()
+        self.upload_id = None
+        self.key = None
+        self.file_id = None
+        self.signed_urls_provider = None
 
     def complete_multipart_upload(self, parts):
         self.progress_displayer.show_completing()
 
+        # AWS expects parts to be sent in order:
+        # https://docs.aws.amazon.com/AmazonS3/latest/API/API_CompleteMultipartUpload.html?utm_source=openai#:~:text=Error%20Code%3A%20InvalidPartOrder,Code%3A%20400%20Bad%20Request
         sorted_parts = sorted(parts, key=lambda part: part["PartNumber"])
 
         response = http_post(
@@ -461,10 +683,11 @@ class FileUploader:
                 "Failed to complete upload for file {}, check your internet connection and try resuming the upload".format(self.file_path)
             )
 
-    def upload_part(self, part, part_number):
-        signed_url = self.get_signed_url_for_part(part_number)
+    def upload_part(self, part, part_index):
+        signed_url = self.signed_urls_provider.get_signed_url_for_part(part_index)
 
         response = http_put_part(signed_url, part)
+
         if response.status_code != 200:
             raise Exception("""Upload of part of the file failed, check your internet connection and try resuming the upload, \n\nError details: {}""".format(response.text))
 
@@ -475,38 +698,29 @@ class FileUploader:
 
         return etag
 
-    def upload_file_section(
-        self, thread_index, from_part_index, to_part_index, abort_event
-    ):
+    def upload_file_parts(self, abort_event):
         try:
-            # Offset start point by the number of already completed parts
-            # (in case we are resuming and already completed is > 0)
-            part_index = from_part_index + self.completed_parts_by_thread[thread_index]
+            while True:
+                if abort_event.is_set():
+                    return
 
-            with open(self.file_path, "rb") as file:
-                file.seek(part_index * self.part_size)
-                part = file.read(self.part_size)
+                part, part_index = self.parts_provider.get_next_part()
 
-                while part_index < to_part_index:
-                    if abort_event.is_set():
-                        return
+                if part_index == None:
+                    return
 
-                    # part_number is 1-indexed
-                    # part_index is same number but 0-indexed (calculate offset in file)
-                    part_number = part_index + 1
+                etag = with_retry(lambda: self.upload_part(part, part_index))
 
-                    etag = with_retry(lambda: self.upload_part(part, part_number))
+                self.parts_provider.part_uploaded(part_index)
+                self.upload_tracker.part_uploaded(part_index + 1, etag)
 
-                    self.upload_tracker.part_uploaded(thread_index, part_number, etag)
-                    self.progress_displayer.increment()
-
-                    part = file.read(self.part_size)
-                    part_index += 1
+                self.progress_displayer.increment()
 
         except Exception as e:
             # If an exception occurs, set the abort event to that the other threads stop too
             abort_event.set()
             raise e
+
 
     def upload_file(self):
         self.progress_displayer.begin()
@@ -516,42 +730,26 @@ class FileUploader:
         self.upload_id = upload_params["uploadId"]
         self.key = upload_params["key"]
         self.file_id = upload_params["fileId"]
-
-        threads_count = len(self.completed_parts_by_thread)
-
-        parts_per_thread = math.floor(self.number_of_parts / threads_count)
-
-        # If not a perfect division, then some leftover parts will need to be distributed among the threads
-        leftover_parts = self.number_of_parts - parts_per_thread * threads_count
+        self.signed_urls_provider = SignedUrlsProvider(
+            self.analysis_id,
+            self.upload_id,
+            self.key,
+            self.api_token,
+            self.parts_provider.number_of_parts
+        )
 
         abort_event = Event()
 
-        with ThreadPoolExecutor(threads_count) as executor:
+        with ThreadPoolExecutor(self.threads_count) as executor:
             futures = []
 
-            to_part_index = 0
-            thread_index = 0
-            while to_part_index < self.number_of_parts:
-                # Start from previous thread's limit
-                from_part_index = to_part_index
-
-                # If still have leftovers, then add it to the current thread
-                extra_part = 1 if leftover_parts > 0 else 0
-                leftover_parts -= 1
-
-                to_part_index += parts_per_thread + extra_part
-
+            for _ in range(self.threads_count):
                 futures.append(
                     executor.submit(
-                        self.upload_file_section,
-                        thread_index,
-                        from_part_index,
-                        to_part_index,
+                        self.upload_file_parts,
                         abort_event,
                     )
                 )
-
-                thread_index += 1
 
             # not_done will always be empty because wait doesn't have a timeout.
             done, not_done = wait(futures)
@@ -622,7 +820,7 @@ def show_resume_option():
             upload_params,
             file_list,
             current_file_index,
-            completed_parts_by_thread,
+            free_part_ranges,
             current_file_created,
         ) = None, None, None, None, None, None
 
@@ -632,7 +830,7 @@ def show_resume_option():
                 upload_params,
                 file_list,
                 current_file_index,
-                completed_parts_by_thread,
+                free_part_ranges,
                 current_file_created,
             ) = get_resume_params_from_file()
 
@@ -786,9 +984,16 @@ def prepare_upload(args):
 
     check_script_version_is_latest(args.token, resume)
 
+    threads_count = args.threads_count
+
+    # If not defined by user, use heuristic based on cpu's count
+    if (threads_count is None):
+        threads_count = max(os.cpu_count() * 3, MIN_THREADS_COUNT)
+        threads_count = min(threads_count, MAX_THREADS_COUNT)
+
     upload_tracker = None
     if resume:
-        upload_tracker = UploadTracker.fromResumeFile(args.token)
+        upload_tracker = UploadTracker.fromResumeFile(args.token, threads_count)
     else:
         files = {}
         if args.wt_files:
@@ -799,7 +1004,7 @@ def prepare_upload(args):
             files["immuneFastq"] = immune_files
 
         upload_tracker = UploadTracker.fromScratch(
-            args.run_id, files, args.max_threads_count, args.token
+            args.run_id, files, args.token, threads_count
         )
 
         if (not args.yes):
@@ -860,11 +1065,11 @@ def main():
     )
     parser.add_argument(
         "-tc",
-        "--max_threads_count",
+        "--threads_count",
         required=False,
-        help="The maximum amount of threads allowed to be used for the upload",
+        help="The amount of threads to be used for the upload",
         type=int,
-        default=THREADS_COUNT,
+        default=None,
     )
     parser.add_argument(
         "-r", "--resume", action="store_true", help="Resume an interrupted upload", required=False
