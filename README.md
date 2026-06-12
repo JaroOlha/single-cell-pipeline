@@ -157,6 +157,21 @@ Disclaimer:
 
 ---
 <br />
+
+# Trailmaker Download
+Trailmaker does not provide an API, therefore you have to download the dataset manually through their web client to your local machine and upload it either manually to Invenio repository, or together with `nrp-cmd` commands in the **Uplaod to NRP** section.
+
+## 1. Navigate to `Insights` module on the left side of the page.
+## 2. AnnData/Seurat object
+Click `Download` and select `.h5ad/.rds` (depending on the project settings) and `.txt` for `Data Processing settings`
+## 3. Separate pre-processed files
+Click `Parse Evercode™` and select the green `Upload` button under all three files:
+- `count_matrix.mtx` / `DGE.mtx`
+- `cell_metadata.csv`
+- `all_genes.csv`
+
+There may be a multitude of samples depending on the project but all contain the same three datasets, therefore, download them just once.
+<br />
 <br />
 <br />
 
