@@ -95,7 +95,7 @@ Run:
 
 Uploads are performed using the script provided by Trailmaker via the web UI.
 
-## Step 1 — Create a Run
+## 1. Create a Run
 
 Note: in production, this will be done by the researcher who knows the sequencing experiment.
 
@@ -117,13 +117,13 @@ If you only want to upload the FASTQ files for now, close the window -- the expe
 ---
 <br />
 
-## Step 2 — Download the upload script
+## 2. Download the upload script
 Download / copy the `parse-upload-x.x.x.py` script.
 
 ---
 <br />
 
-## Step 3 — Generate Upload Token
+## 3. Generate Upload Token
 
 Click **Refresh Token**.
 
@@ -139,7 +139,7 @@ python parse-upload-x.x.x.py \
 ---
 <br />
 
-## Step 4 — Modify File Paths
+## 4. Modify File Paths
 
 Replace the file paths with your local FASTQ directory:
 
@@ -162,10 +162,10 @@ Disclaimer:
 Trailmaker does not provide an API, therefore you have to download the dataset manually through their web client to your local machine and upload it either manually to Invenio repository, or together with `nrp-cmd` commands in the **Uplaod to NRP** section.
 
 ## 1. Navigate to `Insights` module on the left side of the page.
-## 2. AnnData/Seurat object
+## 2. Download AnnData/Seurat object
 Click `Download` and select `.h5ad/.rds` (depending on the project settings) and `.txt` for `Data Processing settings`
-## 3. Separate pre-processed files
-Click `Parse Evercode™` and select the green `Upload` button under all three files:
+## 3. Download Separate pre-processed files
+Click on `Parse Evercode™` and select the green `Upload` button under all three files:
 - `count_matrix.mtx` / `DGE.mtx`
 - `cell_metadata.csv`
 - `all_genes.csv`
@@ -179,16 +179,14 @@ There may be a multitude of samples depending on the project but all contain the
 Before you start uploading to NRP, you need to register / login at the repository [website](https://workflow-repo.test.du.cesnet.cz/) and generate a token in your profile `Settings` -> `Applications`
 <br />
 <br />
-
-**Copy-pasteable commands for a first-time user:**
 <br />
 
-## Step 1 — Add a repository (one-time)
+## 1. Add a repository (one-time)
 ```
 nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ wfrepo
 ```
 Paste your token when prompted.
-## Step 2 — Create record
+## 2. Create record
 ```
 nrp-cmd create record '{"title": "Name-of-your-record"}' \
   --repository wfrepo \
@@ -196,17 +194,17 @@ nrp-cmd create record '{"title": "Name-of-your-record"}' \
   --set r
 ```
 
-## Step 3 — Upload all files from a directory
+## 3. Upload all files from a directory
 ```
 # define path to your dataset
 for f in ./path-to-your-dataset/*; do
   [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository wfrepo
 done
 
-# Or just a single file
+# or just a single file
 nrp-cmd upload file @r <file>
 ```
-## Step 4 — Publish (optional)
+## 4. Publish (optional)
 ```
 nrp-cmd publish record @r --repository wfrepo
 ```
