@@ -179,17 +179,23 @@ There may be a multitude of samples depending on the project but all contain the
 Before you start uploading to NRP, you need to register / login at the repository [website](https://workflow-repo.test.du.cesnet.cz/) and generate a token in your profile `Settings` -> `Applications`
 <br />
 <br />
+If you've installed `nrp-cmd` with `pip` & `virtualenv`, you need to activate the virtual environment first:
+```
+source nrp-cmd/bin/activate
+```
+<br />
+<br />
 <br />
 
 ## 1. Add a repository (one-time)
 ```
-nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ wfrepo
+nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ <repository-name>
 ```
 Paste your token when prompted.
 ## 2. Create record
 ```
 nrp-cmd create record '{"title": "Name-of-your-record"}' \
-  --repository wfrepo \
+  --repository <repository-name> \
   --community generic \
   --set r
 ```
@@ -198,7 +204,7 @@ nrp-cmd create record '{"title": "Name-of-your-record"}' \
 ```
 # define path to your dataset
 for f in ./path-to-your-dataset/*; do
-  [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository wfrepo
+  [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository <repository-name>
 done
 
 # or just a single file
@@ -206,7 +212,7 @@ nrp-cmd upload file @r <file>
 ```
 ## 4. Publish (optional)
 ```
-nrp-cmd publish record @r --repository wfrepo
+nrp-cmd publish record @r --repository <repository-name>
 ```
 <br />
 <br />
