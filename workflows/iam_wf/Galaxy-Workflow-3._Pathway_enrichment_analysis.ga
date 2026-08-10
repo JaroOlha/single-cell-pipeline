@@ -1,0 +1,520 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "Figuring out what broad biological functions those changed genes actually control.",
+    "comments": [
+        {
+            "child_steps": [
+                10,
+                11,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+            ],
+            "color": "orange",
+            "data": {
+                "title": "Pathway enrichment analysis"
+            },
+            "id": 0,
+            "position": [
+                280,
+                0
+            ],
+            "size": [
+                1190,
+                520
+            ],
+            "type": "frame"
+        }
+    ],
+    "format-version": "0.1",
+    "name": "3. Pathway enrichment analysis",
+    "report": {
+        "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
+    },
+    "steps": {
+        "0": {
+            "annotation": "Downregulated tabular file from workflow 2.",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Downregulated tabular file from workflow 2.",
+                    "name": "Downregulated genes"
+                }
+            ],
+            "label": "Downregulated genes",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 110
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"format\": [\"tabular\"], \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "cd1b84a8-5af3-4945-b0ca-838564726dfd",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "Upregulated tabular file from workflow 2.",
+            "content_id": null,
+            "errors": null,
+            "id": 1,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Upregulated tabular file from workflow 2.",
+                    "name": "Upregulated genes"
+                }
+            ],
+            "label": "Upregulated genes",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 210
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"format\": [\"tabular\"], \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "fca3a903-2800-471c-917b-ea4ed2c38146",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "",
+            "content_id": "Cut1",
+            "errors": null,
+            "id": 2,
+            "input_connections": {
+                "input": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Cut out 6th column, downreg.",
+            "name": "Cut",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 300,
+                "top": 40
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Cut1",
+            "tool_state": "{\"columnList\": \"c6\", \"delimiter\": \"T\", \"input\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.2",
+            "type": "tool",
+            "uuid": "6b242014-c15f-483d-9c1a-e21ded4c2c4b",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "Cut1",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "input": {
+                    "id": 1,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Cut out 6th column, upreg.",
+            "name": "Cut",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 300,
+                "top": 270
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Cut1",
+            "tool_state": "{\"columnList\": \"c6\", \"delimiter\": \"T\", \"input\": {\"__class__\": \"ConnectedValue\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.2",
+            "type": "tool",
+            "uuid": "efd81d3c-b529-4436-a742-498f285d077e",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "Show beginning1",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "input": {
+                    "id": 2,
+                    "output_name": "out_file1"
+                }
+            },
+            "inputs": [],
+            "label": "Select first 300 lines, downreg.",
+            "name": "Select first",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 530,
+                "top": 40
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Show beginning1",
+            "tool_state": "{\"header\": false, \"input\": {\"__class__\": \"ConnectedValue\"}, \"lineNum\": \"300\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.2",
+            "type": "tool",
+            "uuid": "e8bb0113-0326-499e-8778-6cd22cd98a62",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "Show beginning1",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "input": {
+                    "id": 3,
+                    "output_name": "out_file1"
+                }
+            },
+            "inputs": [],
+            "label": "Select first 300 lines, upreg.",
+            "name": "Select first",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 530,
+                "top": 270
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Show beginning1",
+            "tool_state": "{\"header\": false, \"input\": {\"__class__\": \"ConnectedValue\"}, \"lineNum\": \"300\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.2",
+            "type": "tool",
+            "uuid": "dcfb8937-10b7-404a-9d49-0db1e9c8eba6",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "6": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gprofiler_gost/gprofiler_gost/0.1.7+galaxy11",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "input": {
+                    "id": 4,
+                    "output_name": "out_file1"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool gProfiler GOSt",
+                    "name": "advanced_options"
+                }
+            ],
+            "label": null,
+            "name": "gProfiler GOSt",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 770,
+                "top": 40
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gprofiler_gost/gprofiler_gost/0.1.7+galaxy11",
+            "tool_shed_repository": {
+                "changeset_revision": "bf39cdd007f5",
+                "name": "gprofiler_gost",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"advanced_options\": {\"significant\": true, \"measure_underrepresentation\": false, \"evcodes\": false, \"user_threshold\": \"0.05\", \"correction_method\": \"gSCS\", \"domain_scope\": \"annotated\", \"custom_bg\": {\"__class__\": \"RuntimeValue\"}, \"numeric_ns\": \"\"}, \"data_sources\": {\"go_sources\": [\"GO:BP\", \"GO:MF\", \"GO:CC\"], \"exclude_iea\": false, \"bp_sources\": [\"KEGG\", \"REAC\", \"WP\"], \"reg_sources\": null, \"proto_sources\": [\"HPA\", \"CORUM\"], \"hp_sources\": \"HP\"}, \"input\": {\"__class__\": \"ConnectedValue\"}, \"ordered_query\": true, \"organism\": {\"select_input_type\": \"select\", \"__current_case__\": 0, \"organism\": \"hsapiens\"}, \"tool_settings\": {\"base_url\": \"http://biit.cs.ut.ee/gprofiler\", \"export_plot\": false}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.1.7+galaxy11",
+            "type": "tool",
+            "uuid": "f21949cc-1dd2-4374-8913-bfec90104c4d",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "downregulated_GOSt",
+                    "output_name": "output",
+                    "uuid": "a2bd86d9-6155-47b7-a50b-04a54f77cc0f"
+                }
+            ]
+        },
+        "7": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/gprofiler_gost/gprofiler_gost/0.1.7+galaxy11",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "input": {
+                    "id": 5,
+                    "output_name": "out_file1"
+                }
+            },
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool gProfiler GOSt",
+                    "name": "advanced_options"
+                }
+            ],
+            "label": null,
+            "name": "gProfiler GOSt",
+            "outputs": [
+                {
+                    "name": "output",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 770,
+                "top": 270
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/gprofiler_gost/gprofiler_gost/0.1.7+galaxy11",
+            "tool_shed_repository": {
+                "changeset_revision": "bf39cdd007f5",
+                "name": "gprofiler_gost",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"advanced_options\": {\"significant\": true, \"measure_underrepresentation\": false, \"evcodes\": false, \"user_threshold\": \"0.05\", \"correction_method\": \"gSCS\", \"domain_scope\": \"annotated\", \"custom_bg\": {\"__class__\": \"RuntimeValue\"}, \"numeric_ns\": \"\"}, \"data_sources\": {\"go_sources\": [\"GO:BP\", \"GO:MF\", \"GO:CC\"], \"exclude_iea\": false, \"bp_sources\": [\"KEGG\", \"REAC\", \"WP\"], \"reg_sources\": null, \"proto_sources\": [\"HPA\", \"CORUM\"], \"hp_sources\": \"HP\"}, \"input\": {\"__class__\": \"ConnectedValue\"}, \"ordered_query\": true, \"organism\": {\"select_input_type\": \"select\", \"__current_case__\": 0, \"organism\": \"hsapiens\"}, \"tool_settings\": {\"base_url\": \"http://biit.cs.ut.ee/gprofiler\", \"export_plot\": false}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "0.1.7+galaxy11",
+            "type": "tool",
+            "uuid": "7e29d1ba-3526-4288-b919-00ba343dc982",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "upregulated_GOSt",
+                    "output_name": "output",
+                    "uuid": "071a7beb-b131-4282-a16b-ba98924cb90a"
+                }
+            ]
+        },
+        "8": {
+            "annotation": "",
+            "content_id": "Show beginning1",
+            "errors": null,
+            "id": 8,
+            "input_connections": {
+                "input": {
+                    "id": 6,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Select first 16 lines, downreg.",
+            "name": "Select first",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 1010,
+                "top": 40
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Show beginning1",
+            "tool_state": "{\"header\": false, \"input\": {\"__class__\": \"ConnectedValue\"}, \"lineNum\": \"16\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.2",
+            "type": "tool",
+            "uuid": "470289aa-6e1b-4d91-8abe-b826caa8296f",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "9": {
+            "annotation": "",
+            "content_id": "Show beginning1",
+            "errors": null,
+            "id": 9,
+            "input_connections": {
+                "input": {
+                    "id": 7,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Select first 16 lines, upreg.",
+            "name": "Select first",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 1010,
+                "top": 270
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionout_file1": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "out_file1"
+                }
+            },
+            "tool_id": "Show beginning1",
+            "tool_state": "{\"header\": false, \"input\": {\"__class__\": \"ConnectedValue\"}, \"lineNum\": \"16\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.2",
+            "type": "tool",
+            "uuid": "557b27cb-5f22-4383-9d77-2b657e5b2bd0",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "10": {
+            "annotation": "",
+            "content_id": "Remove beginning1",
+            "errors": null,
+            "id": 10,
+            "input_connections": {
+                "input": {
+                    "id": 8,
+                    "output_name": "out_file1"
+                }
+            },
+            "inputs": [],
+            "label": "Remove the header, downreg.",
+            "name": "Remove beginning",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 1250,
+                "top": 40
+            },
+            "post_job_actions": {},
+            "tool_id": "Remove beginning1",
+            "tool_state": "{\"input\": {\"__class__\": \"ConnectedValue\"}, \"num_lines\": \"1\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "117ba630-895e-4922-a167-217741bc7343",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "downreg_pathways",
+                    "output_name": "out_file1",
+                    "uuid": "d36d62ad-52c7-4db7-80b4-603ee3b37132"
+                }
+            ]
+        },
+        "11": {
+            "annotation": "",
+            "content_id": "Remove beginning1",
+            "errors": null,
+            "id": 11,
+            "input_connections": {
+                "input": {
+                    "id": 9,
+                    "output_name": "out_file1"
+                }
+            },
+            "inputs": [],
+            "label": "Remove the header, upreg.",
+            "name": "Remove beginning",
+            "outputs": [
+                {
+                    "name": "out_file1",
+                    "type": "input"
+                }
+            ],
+            "position": {
+                "left": 1250,
+                "top": 270
+            },
+            "post_job_actions": {},
+            "tool_id": "Remove beginning1",
+            "tool_state": "{\"input\": {\"__class__\": \"ConnectedValue\"}, \"num_lines\": \"1\", \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.0.0",
+            "type": "tool",
+            "uuid": "843f936c-8611-460e-b847-2ebe098d6813",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "upreg_pathways",
+                    "output_name": "out_file1",
+                    "uuid": "4a7d9f8e-f025-4fda-b428-098c6b633405"
+                }
+            ]
+        }
+    },
+    "tags": [],
+    "uuid": "5e406567-fa61-4a43-aa0d-1040bd4035c9",
+    "version": 3
+}
