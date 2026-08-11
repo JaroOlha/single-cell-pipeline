@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ── Prompt for Project ID ────────────────────────────────────────────────────
 read -rp "Enter BaseSpace Project ID: " PROJECT_ID
 if [[ -z "$PROJECT_ID" ]]; then
     echo "Error: Project ID cannot be empty." >&2
     exit 1
 fi
 
-OUTPUT_DIR="/mnt/data/$PROJECT_ID"   # per-project subdir → accurate size readings
+OUTPUT_DIR="/mnt/data/$PROJECT_ID"
 mkdir -p "$OUTPUT_DIR"
 
-# ── Confirm and run ──────────────────────────────────────────────────────────
 echo ""
 echo "  Project ID : $PROJECT_ID"
 echo "  Output dir : $OUTPUT_DIR"
