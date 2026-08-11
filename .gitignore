@@ -1,3 +1,3 @@
-/scripts/bs
-/scripts/download.log
-/scripts/parse-upload-*
+*bs
+*download.log
+*parse-upload-*
