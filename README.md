@@ -47,10 +47,11 @@ After successful authentication, a configuration file is created containing auth
 Run:
 
 ```bash
-./BaseSpace_download.sh
+mv bs /scripts/bs
+./scripts/BaseSpace_download.sh
 ```
 
-The script will download all data associated with the specified BaseSpace project.
+The script will prompt for project ID and download all data associated with the specified BaseSpace project.
 
 ---
 <br />
@@ -141,16 +142,13 @@ python parse-upload-x.x.x.py \
 
 ## 4. Modify File Paths
 
-Replace the file paths with your local FASTQ directory:
-
+Navigate to directory containing `parse-upload-x.x.x.py` and replace the file paths with your local FASTQ directory:
 ```bash
 python parse-upload-x.x.x.py \
   --token <TOKEN> \
   --run_id <RUN_ID> \
-  --wt_files /fastq_folder/*.fastq.gz
+  --wt_files /fastq_directory/*.fastq.gz
 ```
-
-Run from the directory containing `parse-upload-x.x.x.py`.
 
 Disclaimer:
 `parse-upload-x.x.x.py` script is being constantly updated. If you encounter an error when uploading to Trailmaker, download the latest version from their site.
@@ -202,7 +200,7 @@ nrp-cmd create record '{"title": "Name-of-your-record"}' \
 
 ## 3. Upload all files from a directory
 ```
-# define path to your dataset
+# define path to your dataset and repository name
 for f in ./path-to-your-dataset/*; do
   [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository <repository-name>
 done
