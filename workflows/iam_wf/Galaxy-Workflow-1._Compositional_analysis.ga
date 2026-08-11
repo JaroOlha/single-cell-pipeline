@@ -1,0 +1,183 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "h5ad in, plots, Isogenic Alzheimer Models",
+    "comments": [],
+    "format-version": "0.1",
+    "name": "1. IAM sc-RNA plots",
+    "report": {
+        "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
+    },
+    "steps": {
+        "0": {
+            "annotation": "",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "",
+                    "name": "AnnData object"
+                }
+            ],
+            "label": "AnnData object",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 84.28923848736417
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"format\": [\"h5ad\"], \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "037fa7e7-5a14-4170-b24c-98c0484f760c",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "errors": null,
+            "id": 1,
+            "input_connections": {
+                "adata": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Scanpy plot // UMAP",
+            "name": "Scanpy plot",
+            "outputs": [
+                {
+                    "name": "out_png",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 420,
+                "top": 0
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "16a1c3122996",
+                "name": "scanpy_plot",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"color\": \"SOX2,PAX6,MKI67,FOXG1,MAP2,TBR1,APOE,PSEN1,GFAP,OLIG2\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": null, \"color_map\": null, \"palette\": null, \"frameon\": true, \"ncols\": \"4\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": \"10.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "edc9033a-b4cc-43ed-a30b-4f2cb8060f08",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "UMAP",
+                    "output_name": "out_png",
+                    "uuid": "83cf3fb4-4b1c-4256-8243-d09e9e0ca94f"
+                }
+            ]
+        },
+        "2": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "errors": null,
+            "id": 2,
+            "input_connections": {
+                "adata": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Scanpy plot // UMAP leiden",
+            "name": "Scanpy plot",
+            "outputs": [
+                {
+                    "name": "out_png",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 420.40143743497924,
+                "top": 120
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "16a1c3122996",
+                "name": "scanpy_plot",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"color\": \"leiden\", \"gene_symbols\": \"gene_name\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": null, \"color_map\": null, \"palette\": null, \"frameon\": true, \"ncols\": \"4\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": null, \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "583fa49c-6e44-47f5-8e95-52690b6e1bd7",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "UMAP leiden",
+                    "output_name": "out_png",
+                    "uuid": "dd067b51-9e94-4d23-80da-4cb58ee5dc64"
+                }
+            ]
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "adata": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": "Scanpy plot // dotplot",
+            "name": "Scanpy plot",
+            "outputs": [
+                {
+                    "name": "out_png",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 420.40143743497924,
+                "top": 240
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "16a1c3122996",
+                "name": "scanpy_plot",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.dotplot\", \"__current_case__\": 2, \"var_names\": {\"type\": \"custom\", \"__current_case__\": 1, \"var_names\": \"SOX2,PAX6,MKI67,FOXG1,MAP2,TBR1,APOE,PSEN1,GFAP,OLIG2\"}, \"groupby\": \"leiden\", \"num_categories\": \"7\", \"gene_symbols\": \"gene_symbols\", \"log\": false, \"use_raw\": false, \"dendrogram\": false, \"var_group_positions\": [], \"var_group_rotation\": null, \"figsize\": {\"custom\": \"no\", \"__current_case__\": 1}, \"layer\": \"\", \"color_map\": \"viridis\", \"dot_max\": null, \"dot_min\": null, \"standard_scale\": \"None\", \"expression_cutoff\": \"0.0\", \"mean_only_expressed\": false, \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": null, \"linewidths\": \"0.0\", \"edgecolors\": null}}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "a3e93d20-9ecf-464a-a565-21c648d7a560",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "dotplot",
+                    "output_name": "out_png",
+                    "uuid": "77d5a846-26da-4a74-b457-057fec0b0ccd"
+                }
+            ]
+        }
+    },
+    "tags": [
+        "name:scRNA-seq",
+        "single-cell"
+    ],
+    "uuid": "693f75fc-093e-4189-9109-e9e2266b677c",
+    "version": 9
+}

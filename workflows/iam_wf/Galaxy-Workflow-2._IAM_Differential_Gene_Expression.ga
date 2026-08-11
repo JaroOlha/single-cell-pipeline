@@ -1,0 +1,417 @@
+{
+    "a_galaxy_workflow": "true",
+    "annotation": "2nd_wf_1st_exp_DGE",
+    "comments": [
+        {
+            "child_steps": [
+                4,
+                5,
+                6,
+                7
+            ],
+            "color": "green",
+            "data": {
+                "title": "Differential gene expression"
+            },
+            "id": 1,
+            "position": [
+                600,
+                0
+            ],
+            "size": [
+                480,
+                475.2
+            ],
+            "type": "frame"
+        },
+        {
+            "child_steps": [
+                3,
+                1,
+                2
+            ],
+            "color": "none",
+            "data": {
+                "title": "Pre-processing"
+            },
+            "id": 0,
+            "position": [
+                260,
+                0
+            ],
+            "size": [
+                240,
+                473.6
+            ],
+            "type": "frame"
+        }
+    ],
+    "format-version": "0.1",
+    "name": "2. IAM Differential Gene Expression",
+    "report": {
+        "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
+    },
+    "steps": {
+        "0": {
+            "annotation": "Input - processed Anndata file from workflow 1.",
+            "content_id": null,
+            "errors": null,
+            "id": 0,
+            "input_connections": {},
+            "inputs": [
+                {
+                    "description": "Input - processed Anndata file from workflow 1.",
+                    "name": "Processed AnnData file"
+                }
+            ],
+            "label": "Processed AnnData file",
+            "name": "Input dataset",
+            "outputs": [],
+            "position": {
+                "left": 0,
+                "top": 40
+            },
+            "tool_id": null,
+            "tool_state": "{\"optional\": false, \"format\": [\"h5ad\"], \"tag\": null}",
+            "tool_version": null,
+            "type": "data_input",
+            "uuid": "c63c0699-e9d1-4a7e-bcd6-bffa1d825316",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "1": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_filter/scanpy_filter/1.10.2+galaxy3",
+            "errors": null,
+            "id": 1,
+            "input_connections": {
+                "adata": {
+                    "id": 0,
+                    "output_name": "output"
+                }
+            },
+            "inputs": [],
+            "label": " Scanpy filter // filter on column 2",
+            "name": "Scanpy filter",
+            "outputs": [
+                {
+                    "name": "anndata_out",
+                    "type": "h5ad"
+                }
+            ],
+            "position": {
+                "left": 280,
+                "top": 40
+            },
+            "post_job_actions": {
+                "DeleteIntermediatesActionanndata_out": {
+                    "action_arguments": {},
+                    "action_type": "DeleteIntermediatesAction",
+                    "output_name": "anndata_out"
+                }
+            },
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_filter/scanpy_filter/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "92a189c299d4",
+                "name": "scanpy_filter",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false}, \"method\": {\"method\": \"filter_any\", \"__current_case__\": 2, \"var_obs\": \"obs\", \"filter\": {\"filter\": \"key\", \"__current_case__\": 0, \"key\": \"leiden\", \"filter_key\": {\"type\": \"text\", \"__current_case__\": 1, \"filter\": \"equal\", \"value\": \"2\"}}}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "226a90fe-6d2b-49c5-98d3-83477978be72",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "2": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_normalize/scanpy_normalize/1.10.2+galaxy2",
+            "errors": null,
+            "id": 2,
+            "input_connections": {
+                "adata": {
+                    "id": 1,
+                    "output_name": "anndata_out"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Scanpy normalize",
+            "outputs": [
+                {
+                    "name": "anndata_out",
+                    "type": "h5ad"
+                }
+            ],
+            "position": {
+                "left": 280,
+                "top": 190
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_normalize/scanpy_normalize/1.10.2+galaxy2",
+            "tool_shed_repository": {
+                "changeset_revision": "4766556db52c",
+                "name": "scanpy_normalize",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false}, \"method\": {\"method\": \"pp.normalize_total\", \"__current_case__\": 0, \"target_sum\": null, \"exclude_highly_expressed\": {\"exclude_highly_expressed\": \"False\", \"__current_case__\": 1}, \"key_added\": \"\", \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy2",
+            "type": "tool",
+            "uuid": "a3078f58-28d1-4d8e-899c-906a48f9652a",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "3": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_inspect/scanpy_inspect/1.10.2+galaxy2",
+            "errors": null,
+            "id": 3,
+            "input_connections": {
+                "adata": {
+                    "id": 2,
+                    "output_name": "anndata_out"
+                }
+            },
+            "inputs": [],
+            "label": "Logarithmize, pp.log1p",
+            "name": "Scanpy Inspect and manipulate",
+            "outputs": [
+                {
+                    "name": "anndata_out",
+                    "type": "h5ad"
+                }
+            ],
+            "position": {
+                "left": 280,
+                "top": 340
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_inspect/scanpy_inspect/1.10.2+galaxy2",
+            "tool_shed_repository": {
+                "changeset_revision": "3b5ef3b00cdd",
+                "name": "scanpy_inspect",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false}, \"method\": {\"method\": \"pp.log1p\", \"__current_case__\": 6, \"base\": null, \"layer\": \"\", \"obsm\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy2",
+            "type": "tool",
+            "uuid": "37362e7f-9ceb-4bab-a5f7-7745d15f25cb",
+            "when": null,
+            "workflow_outputs": []
+        },
+        "4": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_inspect/scanpy_inspect/1.10.2+galaxy3",
+            "errors": null,
+            "id": 4,
+            "input_connections": {
+                "adata": {
+                    "id": 3,
+                    "output_name": "anndata_out"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Scanpy Inspect and manipulate",
+            "outputs": [
+                {
+                    "name": "anndata_out",
+                    "type": "h5ad"
+                },
+                {
+                    "name": "ranked_gene",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 620,
+                "top": 40
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_inspect/scanpy_inspect/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "27c054e8d949",
+                "name": "scanpy_inspect",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false}, \"method\": {\"method\": \"tl.rank_genes_groups\", \"__current_case__\": 4, \"get_df\": {\"get_df_select\": \"True\", \"__current_case__\": 1, \"key\": \"dge_results_down\", \"pval_cutoff\": \"0.05\", \"log2fc_min\": null, \"log2fc_max\": null, \"gene_symbols\": \"gene_symbols\"}, \"groupby\": \"samples\", \"use_raw\": false, \"groups\": \"E3_D12\", \"layer\": \"\", \"ref\": {\"rest\": \"group_id\", \"__current_case__\": 1, \"reference\": \"E4_D12\"}, \"n_genes\": null, \"tl_rank_genes_groups_method\": {\"method\": \"wilcoxon\", \"__current_case__\": 1, \"corr_method\": \"benjamini-hochberg\", \"tie_correct\": false}, \"key_added\": \"dge_results_down\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "b4f5e9e7-51a1-4748-b1f2-95aa0b6846c1",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "ranked_gene_downreg",
+                    "output_name": "ranked_gene",
+                    "uuid": "be59610b-3c6a-4433-b384-3d9bfc932b19"
+                },
+                {
+                    "label": "processed AnnData - DGE",
+                    "output_name": "anndata_out",
+                    "uuid": "8e175649-a00e-4ead-9ca5-f9dfd18486ef"
+                }
+            ]
+        },
+        "5": {
+            "annotation": "",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_inspect/scanpy_inspect/1.10.2+galaxy3",
+            "errors": null,
+            "id": 5,
+            "input_connections": {
+                "adata": {
+                    "id": 3,
+                    "output_name": "anndata_out"
+                }
+            },
+            "inputs": [],
+            "label": null,
+            "name": "Scanpy Inspect and manipulate",
+            "outputs": [
+                {
+                    "name": "anndata_out",
+                    "type": "h5ad"
+                },
+                {
+                    "name": "ranked_gene",
+                    "type": "tabular"
+                }
+            ],
+            "position": {
+                "left": 620,
+                "top": 250
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_inspect/scanpy_inspect/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "27c054e8d949",
+                "name": "scanpy_inspect",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false}, \"method\": {\"method\": \"tl.rank_genes_groups\", \"__current_case__\": 4, \"get_df\": {\"get_df_select\": \"True\", \"__current_case__\": 1, \"key\": \"dge_results_up\", \"pval_cutoff\": \"0.05\", \"log2fc_min\": null, \"log2fc_max\": null, \"gene_symbols\": \"gene_symbols\"}, \"groupby\": \"samples\", \"use_raw\": false, \"groups\": \"E4_D12\", \"layer\": \"\", \"ref\": {\"rest\": \"group_id\", \"__current_case__\": 1, \"reference\": \"E3_D12\"}, \"n_genes\": null, \"tl_rank_genes_groups_method\": {\"method\": \"wilcoxon\", \"__current_case__\": 1, \"corr_method\": \"benjamini-hochberg\", \"tie_correct\": false}, \"key_added\": \"dge_results_up\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "b993bfcd-a9a7-479e-aa67-b878593a0080",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "ranked_gene_upreg",
+                    "output_name": "ranked_gene",
+                    "uuid": "e77dbe05-befa-4687-a220-c0bc09e7f889"
+                },
+                {
+                    "label": "processed AnnData - DGE - UP",
+                    "output_name": "anndata_out",
+                    "uuid": "884e0415-4596-448f-82e3-d433760ab77d"
+                }
+            ]
+        },
+        "6": {
+            "annotation": "Downregulated in APOE4",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "errors": null,
+            "id": 6,
+            "input_connections": {
+                "adata": {
+                    "id": 4,
+                    "output_name": "anndata_out"
+                }
+            },
+            "inputs": [],
+            "label": "Scanpy plot // DGE dotplot",
+            "name": "Scanpy plot",
+            "outputs": [
+                {
+                    "name": "out_png",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 860,
+                "top": 40
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "16a1c3122996",
+                "name": "scanpy_plot",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.rank_genes_groups_dotplot\", \"__current_case__\": 28, \"var_names\": {\"type\": \"all\", \"__current_case__\": 0}, \"groups\": \"\", \"n_genes\": \"20\", \"key\": \"dge_results_down\", \"min_logfoldchange\": null, \"log\": false, \"use_raw\": false, \"dendrogram\": false, \"var_group_positions\": [], \"var_group_rotation\": null, \"figsize\": {\"custom\": \"no\", \"__current_case__\": 1}, \"layer\": \"\", \"gene_symbols\": \"gene_name\", \"color_map\": null, \"dot_max\": null, \"dot_min\": null, \"standard_scale\": \"var\", \"expression_cutoff\": \"0.0\", \"mean_only_expressed\": false, \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": null, \"linewidths\": \"0.0\", \"edgecolors\": null}, \"values_to_plot\": null}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "d8734f63-53c6-4523-ad54-878cf1367244",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "dge_dotplot_downregulated",
+                    "output_name": "out_png",
+                    "uuid": "a069f388-08f9-48c5-814b-cf81881435ad"
+                }
+            ]
+        },
+        "7": {
+            "annotation": "Upregulated in APOE4",
+            "content_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "errors": null,
+            "id": 7,
+            "input_connections": {
+                "adata": {
+                    "id": 5,
+                    "output_name": "anndata_out"
+                }
+            },
+            "inputs": [],
+            "label": "Scanpy plot // DGE dotplot 2",
+            "name": "Scanpy plot",
+            "outputs": [
+                {
+                    "name": "out_png",
+                    "type": "png"
+                }
+            ],
+            "position": {
+                "left": 860,
+                "top": 250
+            },
+            "post_job_actions": {},
+            "tool_id": "toolshed.g2.bx.psu.edu/repos/iuc/scanpy_plot/scanpy_plot/1.10.2+galaxy3",
+            "tool_shed_repository": {
+                "changeset_revision": "16a1c3122996",
+                "name": "scanpy_plot",
+                "owner": "iuc",
+                "tool_shed": "toolshed.g2.bx.psu.edu"
+            },
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.rank_genes_groups_dotplot\", \"__current_case__\": 28, \"var_names\": {\"type\": \"all\", \"__current_case__\": 0}, \"groups\": \"E4_D12\", \"n_genes\": \"20\", \"key\": \"dge_results_up\", \"min_logfoldchange\": null, \"log\": false, \"use_raw\": false, \"dendrogram\": false, \"var_group_positions\": [], \"var_group_rotation\": null, \"figsize\": {\"custom\": \"no\", \"__current_case__\": 1}, \"layer\": \"\", \"gene_symbols\": \"gene_name\", \"color_map\": null, \"dot_max\": null, \"dot_min\": null, \"standard_scale\": \"var\", \"expression_cutoff\": \"0.0\", \"mean_only_expressed\": false, \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": null, \"linewidths\": \"0.0\", \"edgecolors\": null}, \"values_to_plot\": null}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_uuid": null,
+            "tool_version": "1.10.2+galaxy3",
+            "type": "tool",
+            "uuid": "7f7a5f16-4e39-4978-90d0-e206db476afc",
+            "when": null,
+            "workflow_outputs": [
+                {
+                    "label": "dge_dotplot_upregulated",
+                    "output_name": "out_png",
+                    "uuid": "54066e41-69cb-48b2-9f2c-879568bbe963"
+                }
+            ]
+        }
+    },
+    "tags": [
+        "name:scRNA-seq",
+        "single-cell"
+    ],
+    "uuid": "9b2f1889-55db-437f-8336-c71c6efd74af",
+    "version": 9
+}
