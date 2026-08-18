@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "title": "Kvalita podzemních vod na Vysočině 2024",
+    "version": "1.0.23",
+    "publication_date": "2025",
+    "resource_type": {
+      "id": "c_ddb1"
+    },
+    "languages": [
+      {
+        "id": "CES"
+      },
+      {
+        "id": "ENG"
+      }
+    ],
+    "additional_titles": [
+      {
+        "title": "Groundwater quality in the Vysočina Region in 2024.",
+        "type": {
+          "id": "translated-title"
+        },
+        "lang": {
+          "id": "ENG"
+        }
+      }
+    ],
+    "additional_descriptions": [
+      {
+        "description": "Tato datová sada obsahuje výsledky monitoringu kvality podzemních vod v Kraji Vysočina v roce 2024.",
+        "type": {
+          "id": "abstract"
+        },
+        "lang": {
+          "id": "CES"
+        }
+      }
+    ],
+    "creators": [
+      {
+        "role": {
+          "id": "Other"
+        },
+        "person_or_org": {
+          "name": "Hufnágl, Pišta",
+          "type": "personal",
+          "given_name": "Pišta",
+          "family_name": "Hufnágl"
+        },
+        "affiliations": [
+          {
+            "name": "Masarykova univerzita"
+          }
+        ]
+      }
+    ],
+    "subjects": [
+      {
+        "subject": "Hydrologie, vodní hospodářství"
+      },
+      {
+        "subject": "podzemní vody"
+      },
+      {
+        "subject": "Environmental monitoring facilities"
+      }
+    ],
+    "identifiers": [
+      {
+        "identifier": "10.45321/as36sl",
+        "scheme": "doi"
+      }
+    ],
+    "dates": [
+      {
+        "date": "2025-04-27",
+        "type": {
+          "id": "Collected"
+        },
+        "description": "Date collected"
+      },
+      {
+        "date": "2024",
+        "type": {
+          "id": "Collected"
+        },
+        "description": "Collection period"
+      }
+    ],
+    "rights": [
+      {
+        "id": "4-BY"
+      }
+    ],
+    "locations": {
+      "features": [
+        {
+          "place": "Kraj Vysočina"
+        }
+      ]
+    },
+    "related_identifiers": [
+      {
+        "identifier": "http://data.europa.eu/eli/dir/2006/118/oj",
+        "scheme": "url",
+        "relation_type": {
+          "id": "IsReferencedBy"
+        },
+        "resource_type": {
+          "id": "c_18cf"
+        }
+      },
+      {
+        "identifier": "https://heis.vuv.cz/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "References"
+        }
+      },
+      {
+        "identifier": "https://opendata.chmi.cz/hydrology/groundwater_quality/data/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "IsDerivedFrom"
+        },
+        "resource_type": {
+          "id": "c_ddb1"
+        }
+      },
+      {
+        "identifier": "https://data.gov.cz/",
+        "scheme": "url",
+        "relation_type": {
+          "id": "HasMetadata"
+        }
+      }
+    ],
+    "related_resources": [
+      {
+        "title": "Směrnice Evropského parlamentu a Rady 2006/118/ES ze dne 12. prosince 2006 o ochraně podzemních vod před znečištěním a zhoršováním stavu",
+        "relation_type": {
+          "id": "IsReferencedBy"
+        },
+        "resource_type": {
+          "id": "c_18cf"
+        }
+      },
+      {
+        "title": "Ponorná vzorkovací pumpa pro odběr vzorků podzemní vody z monitorovacích vrtů",
+        "relation_type": {
+          "id": "IsCollectedBy"
+        },
+        "resource_type": {
+          "id": "8KJG-QS0Y"
+        }
+      },
+      {
+        "title": "Kvalita podzemních vod – výsledky monitoringu jakosti",
+        "relation_type": {
+          "id": "IsDerivedFrom"
+        },
+        "resource_type": {
+          "id": "FF4C-28RK"
+        }
+      },
+      {
+        "title": "Metadata datové sady INSPIRE – Útvary podzemních vod",
+        "relation_type": {
+          "id": "HasMetadata"
+        }
+      }
+    ],
+    "funding": [
+      {
+        "funder": {
+          "name": "Grantová agentura České republiky"
+        },
+        "award": {
+          "title": {
+            "cs": "Program výzkumu kvality podzemních vod"
+          },
+          "number": "https://doi.org/award-identifier"
+        }
+      }
+    ],
+    "publisher": "Masarykova univerzita"
+  }
+}
