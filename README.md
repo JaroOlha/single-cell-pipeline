@@ -1,21 +1,25 @@
 # Genomics Transfer Scripts
 
-This repository contains simple scripts for transferring FASTQ data between:
+Scripts and instructions for transferring FASTQ data between:
 
-- Illumina BaseSpace (via the `bs` CLI)
-- Upload instructions for Parse Biosciences Trailmaker (via the downloadable `parse-upload-x.x.x.py` script)
-- Invenio RDM repository (via `nrp-cmd` client)
+- **Illumina BaseSpace** (via the `bs` CLI)
+- **Parse Biosciences Trailmaker** (via the downloadable `parse-upload-x.x.x.py` script)
+- **Invenio RDM repository** (via the `nrp-cmd` client)
 
-The BaseSpace upload script exists only to create test data for validating the download workflow.
-<br />
-<br />
-<br />
+## Workflow overview
 
-# Prerequisites
+1. Download FASTQ files from BaseSpace.
+2. Upload the FASTQ files to Trailmaker for processing.
+3. Download the processed results from Trailmaker.
+4. Upload the results to the NRP (Invenio) repository.
 
-## BaseSpace CLI Installation and Authentication
+---
 
-Download the BaseSpace CLI:
+## Prerequisites
+
+### BaseSpace CLI
+
+Download the BaseSpace CLI and authenticate:
 
 ```bash
 wget "https://launch.basespace.illumina.com/CLI/latest/amd64-linux/bs" -O bs
@@ -23,112 +27,86 @@ chmod u+x bs
 ./bs auth
 ```
 
-You will receive a URL in the terminal.  
-Open it in a browser, authenticate, and approve access.
+You will receive a URL in the terminal. Open it in a browser, authenticate, and approve access.
 
-After successful authentication, a configuration file is created containing authentication token at:
+After successful authentication, a configuration file containing the authentication token is created at:
 
-```
+```text
 ~/.basespace/default.cfg
 ```
 
+### nrp-cmd
 
-## nrp-cmd - commandline client for invenio repositories
+`nrp-cmd` is a command-line client for Invenio repositories. See [installation with pip & virtualenv or uvx](https://nrp-cz.github.io/docs/userguide/commandline#installation).
 
-[Installation with pip & virtualenv or uvx](https://nrp-cz.github.io/docs/userguide/commandline#installation)
-
----
-<br />
-<br />
-<br />
-
-# BaseSpace Download
-
-Run:
+If you installed `nrp-cmd` with `pip` & `virtualenv`, activate the virtual environment before use:
 
 ```bash
-mv bs /scripts/bs
+source nrp-cmd/bin/activate
+```
+
+### NRP repository access
+
+Before uploading to NRP, register or log in at the [repository website](https://workflow-repo.test.du.cesnet.cz/) and generate a token in your profile under **Settings → Applications**.
+
+---
+
+## BaseSpace download
+
+```bash
+mv bs scripts/bs
 ./scripts/BaseSpace_download.sh
 ```
 
-The script will prompt for project ID and download all data associated with the specified BaseSpace project.
+The script will prompt for a project ID and download all data associated with the specified BaseSpace project.
 
 ---
-<br />
-<br />
 
-# BaseSpace Upload (Testing Only)
+## BaseSpace upload (testing only)
 
-Script:
+> **Note:** This script is not intended for production use. It exists only to create test datasets for validating the download workflow.
 
-```
-BaseSpace_upload.sh
-```
-
-This is not intented be used in production, it is only used to create test datasets.
-
-## FASTQ Naming Requirements
+### FASTQ naming requirements
 
 Files must follow BaseSpace naming conventions:
 
-```
+```text
 SampleName_S1_L001_R1_001.fastq.gz
 SampleName_S1_L001_R2_001.fastq.gz
 ```
 
-Before running:
+### Running the upload
 
-- Insert the correct `PROJECT_ID`
-- Insert the correct local FASTQ directory
-
-Run:
+1. Open `BaseSpace_upload.sh` and set the correct `PROJECT_ID`.
+2. Set the correct local FASTQ directory.
+3. Run the script:
 
 ```bash
 ./BaseSpace_upload.sh
 ```
 
 ---
-<br />
-<br />
-<br />
 
-# Trailmaker Upload
+## Trailmaker upload
 
 Uploads are performed using the script provided by Trailmaker via the web UI.
 
-## 1. Create a Run
+### 1. Create a run
 
-Note: in production, this will be done by the researcher who knows the sequencing experiment.
+> **Note:** In production, this will be done by the researcher who knows the sequencing experiment.
 
-Go to:
-
-```
-https://app.trailmaker.parsebiosciences.com/pipeline
-```
-
-Then:
-
-1. Click **Create New Run**.
-2. A dialog window will open where you can provide experimental details (experimental setup, sample loading table, reference genome, etc.).
-
-If you only want to upload the FASTQ files for now, close the window -- the experimental details can be added after data upload.
-
+1. Go to <https://app.trailmaker.parsebiosciences.com/pipeline>.
+2. Click **Create New Run**. A dialog window will open where you can provide experimental details (experimental setup, sample loading table, reference genome, etc.).
+   - If you only want to upload the FASTQ files for now, close the window — the experimental details can be added after the data upload.
 3. Click the edit button next to **Fastq files** and select **Console Upload**.
 
----
-<br />
+### 2. Download the upload script
 
-## 2. Download the upload script
-Download / copy the `parse-upload-x.x.x.py` script.
+Download or copy the `parse-upload-x.x.x.py` script.
 
----
-<br />
+### 3. Generate an upload token
 
-## 3. Generate Upload Token
-
-Click **Refresh Token**.
-
-You will see a command similar to:
+Click **Refresh Token**. You will see a command similar to:
 
 ```bash
 python parse-upload-x.x.x.py \
@@ -137,12 +115,10 @@ python parse-upload-x.x.x.py \
   --wt_files /path/to/file_1.fastq.gz /path/to/file_2.fastq.gz
 ```
 
----
-<br />
+### 4. Modify file paths
 
-## 4. Modify File Paths
+Navigate to the directory containing `parse-upload-x.x.x.py` and replace the file paths with your local FASTQ directory:
 
-Navigate to directory containing `parse-upload-x.x.x.py` and replace the file paths with your local FASTQ directory:
 ```bash
 python parse-upload-x.x.x.py \
   --token <TOKEN> \
@@ -150,69 +126,75 @@ python parse-upload-x.x.x.py \
   --wt_files /fastq_directory/*.fastq.gz
 ```
 
-Disclaimer:
-`parse-upload-x.x.x.py` script is being constantly updated. If you encounter an error when uploading to Trailmaker, download the latest version from their site.
+> **Note:** The `parse-upload-x.x.x.py` script is constantly updated. If you encounter an error when uploading to Trailmaker, download the latest version from their site.
 
 ---
-<br />
 
-# Trailmaker Download
-Trailmaker does not provide an API, therefore you have to download the dataset manually through their web client to your local machine and upload it either manually to Invenio repository, or together with `nrp-cmd` commands in the **Uplaod to NRP** section.
+## Trailmaker download
 
-## 1. Navigate to `Insights` module on the left side of the page.
-## 2. Download AnnData/Seurat object
-Click `Download` and select `.h5ad/.rds` (depending on the project settings) and `.txt` for `Data Processing settings`
-## 3. Download Separate pre-processed files
+Trailmaker does not provide an API. Download the dataset manually through the web client to your local machine, then upload it to the Invenio repository — either manually or with the `nrp-cmd` commands in the **Upload to NRP** section.
+
+### 1. Open the Insights module
+
+Navigate to the `Insights` module on the left side of the page.
+
+### 2. Download the AnnData/Seurat object
+
+Click `Download` and select `.h5ad/.rds` (depending on the project settings) and `.txt` for `Data Processing settings`.
+
+### 3. Download the pre-processed files
+
 Click on `Parse Evercode™` and select the green `Upload` button under all three files:
+
 - `count_matrix.mtx` / `DGE.mtx`
 - `cell_metadata.csv`
 - `all_genes.csv`
 
-There may be a multitude of samples depending on the project but all contain the same three datasets, therefore, download them just once.
-<br />
-<br />
-<br />
+Depending on the project, there may be many samples, but they all contain the same three files — download them only once.
 
-# Upload to NRP
-Before you start uploading to NRP, you need to register / login at the repository [website](https://workflow-repo.test.du.cesnet.cz/) and generate a token in your profile `Settings` -> `Applications`
-<br />
-<br />
-If you've installed `nrp-cmd` with `pip` & `virtualenv`, you need to activate the virtual environment first:
-```
-source nrp-cmd/bin/activate
-```
-<br />
-<br />
-<br />
+---
 
-## 1. Add a repository (one-time)
-```
+## Upload to NRP
+
+### 1. Add a repository (one-time)
+
+```bash
 nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ <repository-name>
 ```
+
 Paste your token when prompted.
-## 2. Create record
-```
+
+### 2. Create a record
+
+```bash
 nrp-cmd create record '{"title": "Name-of-your-record"}' \
   --repository <repository-name> \
   --community generic \
   --set r
 ```
 
-## 3. Upload all files from a directory
-```
-# define path to your dataset and repository name
+### 3. Upload files
+
+Upload all files from a directory:
+
+```bash
 for f in ./path-to-your-dataset/*; do
   [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository <repository-name>
 done
+```
 
-# or just a single file
-nrp-cmd upload file @r <file>
+Or upload a single file:
+
+```bash
+nrp-cmd upload file @r <file> --repository <repository-name>
 ```
-## 4. Publish (optional)
-```
+
+### 4. Publish (optional)
+
+```bash
 nrp-cmd publish record @r --repository <repository-name>
 ```
-<br />
-<br />
 
-**For full CLI documentation visit [nrp-cz.github.io](https://nrp-cz.github.io/docs/userguide/commandline)**
+---
+
+For full CLI documentation, visit [nrp-cz.github.io](https://nrp-cz.github.io/docs/userguide/commandline).
