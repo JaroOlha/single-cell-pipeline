@@ -1,6 +1,6 @@
 {
     "a_galaxy_workflow": "true",
-    "annotation": "h5ad in, plots, Isogenic Alzheimer Models",
+    "annotation": "Workflow for Isogenic Alzheimer Models. Grouping cells by genetic similarity to identify what biological cell types are present in the sample.",
     "comments": [],
     "format-version": "0.1",
     "name": "1. IAM sc-RNA plots",

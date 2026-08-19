@@ -1,6 +1,6 @@
 {
     "a_galaxy_workflow": "true",
-    "annotation": "GLICO",
+    "annotation": "This Galaxy workflow performs cluster annotation and cell-type mapping for single-cell RNA-seq data from a glioma co-culture system (GLICO). Starting from an AnnData (.h5ad) input, it generates a standardized panel of Scanpy visualizations \u2014 dot plots, UMAPs, and matrix plots \u2014 grouped by leiden clusters to assess expression of canonical marker genes for five cell populations: tumor/glioma cells (SOX2, NES, VIM, GFAP, EGFR, PTPRZ1), astrocytes (AQP4, ALDH1L1, GFAP), microglia/macrophages (AIF1, CD68, P2RY12, TMEM119), oligodendrocytes (MBP, MOG, PLP1), and endothelial cells (PECAM1, VWF, CDH5) . An overview dot plot of all markers, UMAPs colored by leiden cluster and sample, and a general AnnData inspection step support quality control and interpretation . The workflow enables consistent, reproducible annotation of clusters by cell type across co-culture samples.",
     "comments": [
         {
             "child_steps": [
@@ -109,7 +109,7 @@
         }
     ],
     "format-version": "0.1",
-    "name": "Copy of Cluster annotation &amp; co-culture cell-type mapping",
+    "name": "Cluster annotation & amp; co-culture cell-type mapping",
     "report": {
         "markdown": "\n# Workflow Execution Report\n\n## Workflow Inputs\n```galaxy\ninvocation_inputs()\n```\n\n## Workflow Outputs\n```galaxy\ninvocation_outputs()\n```\n\n## Workflow\n```galaxy\nworkflow_display()\n```\n"
     },
@@ -137,7 +137,7 @@
             "tool_state": "{\"optional\": false, \"format\": [\"h5ad\"], \"tag\": null}",
             "tool_version": null,
             "type": "data_input",
-            "uuid": "7135fe35-7ac2-40aa-834c-ce0df675403e",
+            "uuid": "067a00b7-0734-43fb-93b6-478d298653d0",
             "when": null,
             "workflow_outputs": []
         },
@@ -152,12 +152,7 @@
                     "output_name": "output"
                 }
             },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Scanpy plot",
-                    "name": "adata"
-                }
-            ],
+            "inputs": [],
             "label": "dotplot leiden",
             "name": "Scanpy plot",
             "outputs": [
@@ -178,11 +173,11 @@
                 "owner": "iuc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"adata\": {\"__class__\": \"RuntimeValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.dotplot\", \"__current_case__\": 2, \"var_names\": {\"type\": \"custom\", \"__current_case__\": 1, \"var_names\": \"SOX2, NES, VIM, GFAP, EGFR, MKI67, AIF1, CD68, P2RY12, TMEM119, AQP4, ALDH1L1, MBP, MOG, PECAM1, VWF, COL1A1, PDGFRA\"}, \"groupby\": \"leiden\", \"num_categories\": \"7\", \"interactive_plot\": false, \"gene_symbols\": \"gene_symbols\", \"log\": false, \"use_raw\": false, \"dendrogram\": false, \"var_group_positions\": [], \"var_group_rotation\": null, \"figsize\": {\"custom\": \"no\", \"__current_case__\": 1}, \"layer\": \"\", \"color_map\": null, \"dot_max\": null, \"dot_min\": null, \"standard_scale\": \"None\", \"expression_cutoff\": \"0.0\", \"mean_only_expressed\": false, \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": null, \"linewidths\": \"0.0\", \"edgecolors\": null}}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.dotplot\", \"__current_case__\": 2, \"var_names\": {\"type\": \"custom\", \"__current_case__\": 1, \"var_names\": \"SOX2, NES, VIM, GFAP, EGFR, MKI67, AIF1, CD68, P2RY12, TMEM119, AQP4, ALDH1L1, MBP, MOG, PECAM1, VWF, COL1A1, PDGFRA\"}, \"groupby\": \"leiden\", \"num_categories\": \"7\", \"interactive_plot\": false, \"gene_symbols\": \"gene_symbols\", \"log\": false, \"use_raw\": false, \"dendrogram\": false, \"var_group_positions\": [], \"var_group_rotation\": null, \"figsize\": {\"custom\": \"no\", \"__current_case__\": 1}, \"layer\": \"\", \"color_map\": null, \"dot_max\": null, \"dot_min\": null, \"standard_scale\": \"None\", \"expression_cutoff\": \"0.0\", \"mean_only_expressed\": false, \"matplotlib_pyplot_scatter\": {\"alpha\": null, \"vmin\": null, \"vmax\": null, \"linewidths\": \"0.0\", \"edgecolors\": null}}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "41508b09-c51f-4204-8f96-3b0725d341bf",
+            "uuid": "7e6ee4e8-687b-4e50-95da-9d96db920bf4",
             "when": null,
             "workflow_outputs": []
         },
@@ -222,7 +217,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "b00741ab-9b1e-4ae4-bd94-e427ab899b4f",
+            "uuid": "0b06bddc-ece1-436d-ba3f-3406ab3dea5b",
             "when": null,
             "workflow_outputs": []
         },
@@ -262,7 +257,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "707bf4fd-2bb7-4331-b4b3-44833d3f05c8",
+            "uuid": "5df980a6-6122-4fe3-aeb4-fb123b5e54f8",
             "when": null,
             "workflow_outputs": []
         },
@@ -302,7 +297,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "53bbce29-9d8e-4e71-abb6-3fcb2fc24c5b",
+            "uuid": "a04bd9a4-059e-478f-a968-f3d152db8f6a",
             "when": null,
             "workflow_outputs": []
         },
@@ -342,7 +337,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "ae263251-a449-4764-a186-680af278f1d0",
+            "uuid": "70bc802e-d579-4233-befd-cee0419860f3",
             "when": null,
             "workflow_outputs": []
         },
@@ -382,7 +377,7 @@
             "tool_uuid": null,
             "tool_version": "0.11.4+galaxy3",
             "type": "tool",
-            "uuid": "91b9f1fc-6b34-45a6-a03c-c10ede6805b6",
+            "uuid": "ace24bc0-684d-4ad3-bc7f-0afaf9d74880",
             "when": null,
             "workflow_outputs": []
         },
@@ -422,7 +417,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "15f68983-9d17-4373-be3d-8f3f7813be59",
+            "uuid": "34086971-c34e-4f29-b0e7-08c5df1c96a8",
             "when": null,
             "workflow_outputs": []
         },
@@ -462,7 +457,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "58780ef9-e99e-4c4f-a543-cf56783c25d7",
+            "uuid": "b675423b-2189-4ede-9fcf-ac1c7e0bf6ab",
             "when": null,
             "workflow_outputs": []
         },
@@ -502,7 +497,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "463a80e8-4986-4dcb-8686-5293a02234ca",
+            "uuid": "6b71310f-2a19-4f4f-a542-952e5933dbcc",
             "when": null,
             "workflow_outputs": []
         },
@@ -542,7 +537,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "10650c6a-3ec4-4f38-a621-a9ef47c25b83",
+            "uuid": "d1a5d06e-984b-4253-8946-7f8e4906f750",
             "when": null,
             "workflow_outputs": []
         },
@@ -557,12 +552,7 @@
                     "output_name": "output"
                 }
             },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Scanpy plot",
-                    "name": "adata"
-                }
-            ],
+            "inputs": [],
             "label": "UMAP 3",
             "name": "Scanpy plot",
             "outputs": [
@@ -583,11 +573,11 @@
                 "owner": "iuc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"adata\": {\"__class__\": \"RuntimeValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"interactive_plot\": false, \"color\": \"AIF1, CD68, P2RY12, TMEM119\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": \"2.0\", \"color_map\": \"plasma\", \"palette\": null, \"frameon\": true, \"ncols\": \"3\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": \"0.3\", \"vmin\": null, \"vmax\": \"6.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"interactive_plot\": false, \"color\": \"AIF1, CD68, P2RY12, TMEM119\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": \"2.0\", \"color_map\": \"plasma\", \"palette\": null, \"frameon\": true, \"ncols\": \"3\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": \"0.3\", \"vmin\": null, \"vmax\": \"6.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "38b03c42-8cd4-4c35-85a1-14eb5da14e94",
+            "uuid": "3623812a-f507-42ec-905c-ee3a7e348bc8",
             "when": null,
             "workflow_outputs": []
         },
@@ -627,7 +617,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "3d93f70d-bc05-4e1e-845e-18c53ee571c5",
+            "uuid": "c3df5559-c7b6-456e-b9e7-ae723f91e5fd",
             "when": null,
             "workflow_outputs": []
         },
@@ -667,7 +657,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "4036b876-8617-4769-ab04-ab854194ae60",
+            "uuid": "c0cd4747-b510-4fa6-beef-649816fc99e1",
             "when": null,
             "workflow_outputs": []
         },
@@ -682,12 +672,7 @@
                     "output_name": "output"
                 }
             },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Scanpy plot",
-                    "name": "adata"
-                }
-            ],
+            "inputs": [],
             "label": "UMAP 4",
             "name": "Scanpy plot",
             "outputs": [
@@ -708,11 +693,11 @@
                 "owner": "iuc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"adata\": {\"__class__\": \"RuntimeValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"interactive_plot\": false, \"color\": \"MBP, MOG, PLP1\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": \"2.0\", \"color_map\": \"inferno\", \"palette\": null, \"frameon\": true, \"ncols\": \"3\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": \"0.3\", \"vmin\": null, \"vmax\": \"6.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"interactive_plot\": false, \"color\": \"MBP, MOG, PLP1\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": \"2.0\", \"color_map\": \"inferno\", \"palette\": null, \"frameon\": true, \"ncols\": \"3\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": \"0.3\", \"vmin\": null, \"vmax\": \"6.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "584e9147-82bf-452d-b2c2-30eb4b3e6469",
+            "uuid": "b230366e-cfeb-4369-822a-b6a0fbc26a0a",
             "when": null,
             "workflow_outputs": []
         },
@@ -752,7 +737,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "4a5b3129-0072-4df9-bb71-88053fe53652",
+            "uuid": "776869a5-9d0b-4ed9-b79e-58990ccee0bc",
             "when": null,
             "workflow_outputs": []
         },
@@ -792,7 +777,7 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "ec1e5921-f674-46c0-bd57-1fabd6d203f1",
+            "uuid": "e16db270-5fa9-43b4-8999-97fb1fd4f2eb",
             "when": null,
             "workflow_outputs": []
         },
@@ -807,12 +792,7 @@
                     "output_name": "output"
                 }
             },
-            "inputs": [
-                {
-                    "description": "runtime parameter for tool Scanpy plot",
-                    "name": "adata"
-                }
-            ],
+            "inputs": [],
             "label": "UMAP 5",
             "name": "Scanpy plot",
             "outputs": [
@@ -833,11 +813,11 @@
                 "owner": "iuc",
                 "tool_shed": "toolshed.g2.bx.psu.edu"
             },
-            "tool_state": "{\"adata\": {\"__class__\": \"RuntimeValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"interactive_plot\": false, \"color\": \"PECAM1, VWF, CDH5\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": \"2.0\", \"color_map\": \"magma\", \"palette\": null, \"frameon\": true, \"ncols\": \"3\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": \"0.3\", \"vmin\": null, \"vmax\": \"6.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
+            "tool_state": "{\"adata\": {\"__class__\": \"ConnectedValue\"}, \"advanced_common\": {\"show_log\": false, \"output_anndata\": false}, \"format\": \"png\", \"method\": {\"method\": \"pl.umap\", \"__current_case__\": 16, \"interactive_plot\": false, \"color\": \"PECAM1, VWF, CDH5\", \"gene_symbols\": \"gene_symbols\", \"use_raw\": false, \"edges\": {\"edges\": \"False\", \"__current_case__\": 1}, \"arrows\": false, \"sort_order\": true, \"groups\": \"\", \"plot\": {\"components\": [], \"projection\": \"2d\", \"legend_loc\": \"right margin\", \"legend_fontsize\": null, \"legend_fontweight\": \"bold\", \"size\": \"2.0\", \"color_map\": \"magma\", \"palette\": null, \"frameon\": true, \"ncols\": \"3\", \"wspace\": \"0.1\", \"hspace\": \"0.25\", \"title\": \"\"}, \"add_outline\": false, \"outline_color_border\": null, \"outline_color_gap\": null, \"outline_width_border\": \"0.3\", \"outline_width_gap\": \"0.05\", \"matplotlib_pyplot_scatter\": {\"alpha\": \"0.3\", \"vmin\": null, \"vmax\": \"6.0\", \"linewidths\": \"0.0\", \"edgecolors\": null}, \"layer\": \"\"}, \"__page__\": 0, \"__rerun_remap_job_id__\": null}",
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "ba797d2e-a5a2-4f5c-b6b3-0ee8593bb293",
+            "uuid": "e9f46156-c8a1-470d-ade5-13d1945a1176",
             "when": null,
             "workflow_outputs": []
         },
@@ -877,12 +857,15 @@
             "tool_uuid": null,
             "tool_version": "1.11.5+galaxy0",
             "type": "tool",
-            "uuid": "d45e2c0d-fc7c-4bc2-bbb0-2eb81ae14bc8",
+            "uuid": "527aecf1-7e97-491d-8d7f-d5dccbda67f3",
             "when": null,
             "workflow_outputs": []
         }
     },
-    "tags": [],
-    "uuid": "96372b57-3220-4344-a40c-d3431f503f56",
-    "version": 16
+    "tags": [
+        "name:scRNA-seq",
+        "name:single-cell"
+    ],
+    "uuid": "73ccb5d8-5900-40bb-b91f-0b68fdc2c3ea",
+    "version": 18
 }

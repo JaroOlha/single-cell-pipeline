@@ -1,6 +1,6 @@
 {
     "a_galaxy_workflow": "true",
-    "annotation": "2nd_wf_1st_exp_DGE",
+    "annotation": "Finding the exact genes that significantly change when a healthy cell gets sick.",
     "comments": [
         {
             "child_steps": [

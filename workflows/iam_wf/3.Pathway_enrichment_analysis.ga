@@ -1,6 +1,6 @@
 {
     "a_galaxy_workflow": "true",
-    "annotation": "Figuring out what broad biological functions those changed genes actually control.",
+    "annotation": "Figuring out what broad biological functions genes control, after healthy cell gets sick.",
     "comments": [
         {
             "child_steps": [
