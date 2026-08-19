@@ -47,7 +47,7 @@ source nrp-cmd/bin/activate
 
 ### NRP repository access
 
-Before uploading to NRP, register or log in at the [repository website](https://workflow-repo.test.du.cesnet.cz/) and generate a token in your profile under **Settings → Applications**.
+Before uploading to NRP, register or log in at the [repository website](https://datarepo.eosc.cz/) and generate a token in your profile under **Settings → Applications**.
 
 ---
 
@@ -159,7 +159,7 @@ Depending on the project, there may be many samples, but they all contain the sa
 ### 1. Add a repository (one-time)
 
 ```bash
-nrp-cmd add repository https://workflow-repo.test.du.cesnet.cz/ <repository-name>
+nrp-cmd add repository https://datarepo.eosc.cz/ <repository-alias>
 ```
 
 Paste your token when prompted.
@@ -168,8 +168,8 @@ Paste your token when prompted.
 
 ```bash
 nrp-cmd create record '{"title": "Name-of-your-record"}' \
-  --repository <repository-name> \
-  --community generic \
+  --repository <repository-alias> \
+  --workflow individual \
   --set r
 ```
 
@@ -179,20 +179,20 @@ Upload all files from a directory:
 
 ```bash
 for f in ./path-to-your-dataset/*; do
-  [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository <repository-name>
+  [ -f "$f" ] && nrp-cmd upload file @r "$f" --repository <repository-alias> --draft
 done
 ```
 
 Or upload a single file:
 
 ```bash
-nrp-cmd upload file @r <file> --repository <repository-name>
+nrp-cmd upload file @r <file> --repository <repository-alias>
 ```
 
 ### 4. Publish (optional)
 
 ```bash
-nrp-cmd publish record @r --repository <repository-name>
+nrp-cmd publish record @r --repository <repository-alias>
 ```
 
 ---
