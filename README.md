@@ -186,7 +186,7 @@ done
 Or upload a single file:
 
 ```bash
-nrp-cmd upload file @r <file> --repository <repository-alias>
+nrp-cmd upload file @r <file> --repository <repository-alias> --draft
 ```
 
 ### 4. Publish (optional)
